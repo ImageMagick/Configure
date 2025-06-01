@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,12 +17,15 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
-#include "CommandLineInfo.h"
 #include "ConfigureApp.h"
+
+#include "Configs.h"
+#include "ConfigureOptions.h"
 #include "ConfigureWizard.h"
+#include "CommandLineInfo.h"
+#include "Project.h"
+#include "Projects.h"
 #include "Solution.h"
-#include "WaitDialog.h"
 
 BEGIN_MESSAGE_MAP(ConfigureApp, CWinApp)
   ON_COMMAND(ID_HELP, CWinApp::OnHelp)
@@ -34,15 +37,80 @@ ConfigureApp::ConfigureApp()
 {
 }
 
-BOOL ConfigureApp::Init()
+BOOL ConfigureApp::InitInstance()
 {
-  ConfigureWizard
-    wizard;
-  
-  INT_PTR
-    response;
+  bool
+    attachedConsole;
 
-  Solution
+  ConfigureOptions
+    options(std::filesystem::current_path().parent_path().wstring() + L"\\");
+
+  CommandLineInfo info=CommandLineInfo(options);
+  ParseCommandLine(info);
+
+  attachedConsole=attachConsole();
+
+  if (info.showWizard && !attachedConsole)
+  {
+    ConfigureWizard
+      wizard;
+
+    wizard.setOptions(options);
+
+    if (wizard.DoModal() != ID_WIZFINISH)
+      return(FALSE);
+  }
+
+  if (!attachedConsole)
+    return(createFiles(options));
+
+  try
+  {
+    return(createFiles(options));
+  }
+  catch (std::exception ex)
+  {
+    std::cerr << "Exception caught: " << ex.what() << std::endl;
+    return(FALSE);
+  } 
+}
+
+bool ConfigureApp::attachConsole()
+{
+  FILE
+    *cerr,
+    *cout;
+
+  if (!AttachConsole(ATTACH_PARENT_PROCESS)) 
+    return(false);
+
+  freopen_s(&cout,"CONOUT$","w",stdout);
+  freopen_s(&cerr,"CONOUT$","w",stderr);
+
+  std::cout << std::endl << "Console attached successfully." << std::endl;
+  return(true);
+}
+
+BOOL ConfigureApp::createFiles(ConfigureOptions &options)
+{
+  std::vector<Config> configs=Configs::load(options);
+  std::vector<Project> projects=Projects::create(configs,options);
+  Projects::write(projects);
+  Solution::write(projects,options);
+
+  //
+  //
+  //
+  //
+  // WRITE THE NOTICE FILE!
+  //
+  //
+  //
+  //
+
+  //
+
+  /*Solution
     solution(wizard);
 
   WaitDialog
@@ -53,46 +121,15 @@ BOOL ConfigureApp::Init()
 
   wizard.parseCommandLineInfo(info);
 
-  solution.loadProjects();
+  solution.loadProjects();*/
 
-  response=ID_WIZFINISH;
-  if (info.noWizard() == FALSE)
-    response=wizard.DoModal();
+  //response=ID_WIZFINISH;
+  //if (info.noWizard() == FALSE)
+  //  response=wizard.DoModal();
 
-  if (response != ID_WIZFINISH)
-    return(FALSE);
+  //solution.write(waitDialog);
 
-  solution.write(waitDialog);
+  //std::vector<ConfigFile> configFiles = ConfigFiles::load(L"D:/ImageMagick/ImageMagick-Windows",options);
+
   return(TRUE);
-}
-
-
-BOOL ConfigureApp::InitInstance()
-{
-  if (AttachConsole(ATTACH_PARENT_PROCESS))
-  {
-    try
-    {
-      cout << "Console attached successfully." << endl;
-      return Init();
-    }
-    catch (exception ex)
-    {
-      FILE *fpstderr = stderr;
-      if (freopen_s(&fpstderr, "CONOUT$", "w", stderr) == 0)
-      {
-        cerr << "Exception caught: " << ex.what() << endl;
-      }
-      else
-      {
-        cout << "Failed to redirect stderr." << endl;
-      }
-      return(FALSE);
-    }
-  }
-  else
-  {
-    cout << "Failed to attach console." << endl;
-    return Init();
-  }
 }

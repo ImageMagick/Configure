@@ -18,26 +18,47 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../ConfigureOptions.h"
-
-class TargetPage : public CPropertyPage
+class ConfigureOptions
 {
-  DECLARE_DYNCREATE(TargetPage)
-
 public:
-  TargetPage();
+  ConfigureOptions(const std::wstring &rootDirectory);
 
-  void setOptions(ConfigureOptions &options);
+  const std::wstring architectureName() const;
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+  const std::wstring platform() const;
 
-  virtual BOOL OnInitDialog();
+  const std::wstring projectsDirectory() const;
 
-  DECLARE_MESSAGE_MAP()
+  Architecture architecture;
+  BuildType buildType;
+  BOOL enableDpc;
+  BOOL excludeAliases;
+  BOOL excludeDeprecated;
+  BOOL includeIncompatibleLicense;
+  BOOL includeOptional;
+  BOOL installedSupport;
+  BOOL linkRuntime;
+  PolicyConfig policyConfig;
+  QuantumDepth quantumDepth;
+  std::wstring rootDirectory;
+  BOOL useHDRI;
+  BOOL useOpenCL;
+  BOOL useOpenMP;
+  ImageMagickVersion version;
+  VisualStudioVersion visualStudioVersion;
+  BOOL zeroConfigurationSupport;
+
+  void setImageMagickVersion6();
 
 private:
-  ConfigureOptions* _options;
+  const std::wstring buildTypeName() const;
+
+  static std::wstring getEnvironmentVariable(const wchar_t *name);
+
+  static VisualStudioVersion getVisualStudioVersion();
+  
+  static bool hasVisualStudioFolder(const wchar_t *name);
 };
+

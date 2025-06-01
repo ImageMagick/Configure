@@ -1,0 +1,125 @@
+#include "ConfigureOptions.h"
+
+ConfigureOptions::ConfigureOptions(const std::wstring &rootDirectory)
+  : rootDirectory(rootDirectory)
+{
+#if _M_IX86
+  architecture=Architecture::x86;
+#elif _M_ARM64
+  architecture=Architecture::Arm64;
+#else
+  architecture=Architecture::x64;
+#endif
+  buildType=BuildType::Dynamic;
+  enableDpc=TRUE;
+  excludeAliases=FALSE;
+  excludeDeprecated=TRUE;
+#ifdef DEBUG
+  includeIncompatibleLicense=TRUE;
+  includeOptional=TRUE;
+#else
+  includeIncompatibleLicense=FALSE;
+  includeOptional=FALSE;
+#endif
+  installedSupport=FALSE;
+  linkRuntime=FALSE;
+  policyConfig=PolicyConfig::Open;
+  quantumDepth=QuantumDepth::Q16;
+  useHDRI=TRUE;
+  useOpenCL=TRUE;
+  useOpenMP=TRUE;
+  version=ImageMagickVersion::ImageMagick7;
+  visualStudioVersion=getVisualStudioVersion();
+  zeroConfigurationSupport=FALSE;
+}
+
+const std::wstring ConfigureOptions::architectureName() const
+{
+  switch (architecture)
+  {
+  case Architecture::x86: return(L"x86");
+  case Architecture::x64: return(L"x64");
+  case Architecture::Arm64: return(L"arm64");
+  default: throwException(L"Unknown architecture");
+  }
+}
+
+const std::wstring ConfigureOptions::buildTypeName() const
+{
+  switch (buildType)
+  {
+  case BuildType::Dynamic: return(L"Dynamic");
+  case BuildType::Static: return(L"Static");
+  default: throwException(L"Unknown build type");
+  }
+}
+
+const std::wstring ConfigureOptions::platform() const
+{
+  switch (architecture)
+  {
+  case Architecture::x86: return(L"Win32");
+  case Architecture::x64: return(L"x64");
+  case Architecture::Arm64: return(L"ARM64");
+  default: throwException(L"Unknown architecture");
+  }
+}
+
+const std::wstring ConfigureOptions::projectsDirectory() const
+{
+  return(L"ProjectFiles\\" + buildTypeName() + L"\\" + architectureName() + L"\\");
+}
+
+std::wstring ConfigureOptions::getEnvironmentVariable(const wchar_t *name)
+{
+  wchar_t
+    *buffer;
+
+  size_t
+    length;
+
+  std::wstring
+    value;
+
+  if (_wdupenv_s(&buffer,&length,name) == 0)
+  {
+    if ((buffer != (wchar_t *) NULL) && (length > 0))
+    {
+      value=std::wstring(buffer);
+      free(buffer);
+      return(value);
+    }
+  }
+
+  return(value);
+}
+
+VisualStudioVersion ConfigureOptions::getVisualStudioVersion()
+{
+  if (hasVisualStudioFolder(L"2022"))
+    return(VisualStudioVersion::VS2022);
+  else if (hasVisualStudioFolder(L"2019"))
+    return(VisualStudioVersion::VS2019);
+  else if (hasVisualStudioFolder(L"2017"))
+    return(VisualStudioVersion::VS2017);
+  else
+    return(VSLATEST);
+}
+
+bool ConfigureOptions::hasVisualStudioFolder(const wchar_t *name)
+{
+  std::wstring
+    path;
+
+  path=getEnvironmentVariable(L"ProgramW6432") + L"\\Microsoft Visual Studio\\" + name;
+  if (std::filesystem::exists(path))
+    return(true);
+  path=getEnvironmentVariable(L"ProgramFiles(x86)") + L"\\Microsoft Visual Studio\\" + name;
+  return(std::filesystem::exists(path) ? true : false);
+}
+
+void ConfigureOptions::setImageMagickVersion6()
+{
+  version=ImageMagickVersion::ImageMagick6;
+  useHDRI=FALSE;
+}

@@ -18,26 +18,30 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../ConfigureOptions.h"
+#include "Config.h"
+#include "ConfigureOptions.h"
+#include "Project.h"
 
-class TargetPage : public CPropertyPage
+class Projects
 {
-  DECLARE_DYNCREATE(TargetPage)
-
 public:
-  TargetPage();
+  static std::vector<Project> create(const std::vector<Config> &configs,const ConfigureOptions &options);
 
-  void setOptions(ConfigureOptions &options);
+  static void write(const std::vector<Project> &projects);
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+//private:
+//
 
-  virtual BOOL OnInitDialog();
-
-  DECLARE_MESSAGE_MAP()
-
-private:
-  ConfigureOptions* _options;
+  //static std::wstring& projectName(const std::wstring name,const ProjectType type);
+//
+//  //static void addCoderProjects(const ConfigFile &configFile,const ConfigureOptions &options,std::vector<ProjectFile> &projectFiles);
+//
+//  static std::wstring createProjectsFolder(const std::wstring &rootFolder,const ConfigureOptions &options);
+//
+//  //static void writeLibrary(const std::wstring projectsFolder,ConfigFile configFile,std::vector<ConfigFile> configFiles,const ConfigureOptions options);
+//
+//  //static void writeProjectStart();
+//};
 };

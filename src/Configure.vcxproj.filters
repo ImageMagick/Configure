@@ -19,6 +19,8 @@
     <ClCompile Include="Pages\WelcomePage.cpp">
       <Filter>Pages</Filter>
     </ClCompile>
+    <ClCompile Include="ConfigFile.cpp" />
+    <ClCompile Include="ConfigFiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineInfo.h" />
@@ -41,6 +43,8 @@
     <ClInclude Include="Pages\WelcomePage.h">
       <Filter>Pages</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigFile.h" />
+    <ClInclude Include="ConfigFiles.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Configure.rc" />
