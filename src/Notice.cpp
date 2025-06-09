@@ -17,31 +17,33 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
 
-#define WINVER 0x0501
+#include "Notice.h"
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+void Notice::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
+{
+  wofstream notice(options.rootDirectory + L"Artifacts\\NOTICE.txt");
+  if (!notice)
+    throwException(L"Unable to open NOTICE.txt");
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  notice << "[ Imagemagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
+  notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
 
-#include "resource.h" // main symbols
+  wstring licensesDirectory=options.rootDirectory + L"Artifacts\\license\\";
+  for (const auto& entry : filesystem::directory_iterator(licensesDirectory))
+  {
+    if (!entry.is_regular_file())
+      continue;
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+    notice << readLicense(entry.path().wstring()) << endl << endl;
+  }
+}
 
-#include "Shared.h"
+const wstring Notice::readLicense(const wstring &fileName)
+{
+  wifstream file(fileName);
+  if (!file)
+    throwException(L"Unable to open license file: " + fileName);
+
+  return(trim(wstring((istreambuf_iterator<wchar_t>(file)),istreambuf_iterator<wchar_t>())));
+}

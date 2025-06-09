@@ -18,30 +18,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
+#include "stdafx.h"
 
-#define WINVER 0x0501
+#include "ConfigureOptions.h"
+#include "VersionInfo.h"
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+class Notice
+{
+public:
+  static void write(const ConfigureOptions &options,const VersionInfo &versionInfo);
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+private:
+  static const wstring readLicense(const wstring &fileName);
+};
 
-#include "resource.h" // main symbols
-
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
-
-#include "Shared.h"

@@ -17,31 +17,28 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
+#include "XmlConfigFiles.h"
 
-#define WINVER 0x0501
+const wstring XmlConfigFiles::getPolicyFileName(const ConfigureOptions &options)
+{
+  switch(options.policyConfig)
+  {
+    case PolicyConfig::Limited: return L"policy-limited.xml";
+    case PolicyConfig::Open: return L"policy-open.xml";
+    case PolicyConfig::Secure: return L"policy-secure.xml";
+    case PolicyConfig::WebSafe: return L"policy-websafe.xml";
+    default: throwException(L"Unknown policy configuration type.");
+  }
+}
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+void XmlConfigFiles::write(const ConfigureOptions &options)
+{
+  const wstring configFolder=options.rootDirectory + L"ImageMagick\\config\\";
+  const wstring targetFolder=options.rootDirectory + L"Artifacts\\bin\\";
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  filesystem::copy_file(configFolder + getPolicyFileName(options),targetFolder + L"policy.xml",filesystem::copy_options::overwrite_existing);
 
-#include "resource.h" // main symbols
-
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
-
-#include "Shared.h"
+  vector<wstring> xmlFiles = { L"colors.xml", L"english.xml", L"locale.xml", L"log.xml", L"mime.xml", L"thresholds.xml" };
+  for (auto& xmlFile : xmlFiles)
+    filesystem::copy_file(configFolder + xmlFile,targetFolder + xmlFile,filesystem::copy_options::overwrite_existing);
+}

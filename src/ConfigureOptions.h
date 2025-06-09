@@ -18,30 +18,51 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
+#include "stdafx.h"
 
-#define WINVER 0x0501
+class ConfigureOptions
+{
+public:
+  ConfigureOptions(const wstring &rootDirectory);
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+  Architecture architecture;
+  BuildType buildType;
+  BOOL enableDpc;
+  BOOL excludeAliases;
+  BOOL excludeDeprecated;
+  BOOL includeIncompatibleLicense;
+  BOOL includeOptional;
+  BOOL installedSupport;
+  BOOL linkRuntime;
+  PolicyConfig policyConfig;
+  QuantumDepth quantumDepth;
+  wstring rootDirectory;
+  BOOL useHDRI;
+  BOOL useOpenCL;
+  BOOL useOpenMP;
+  ImageMagickVersion version;
+  VisualStudioVersion visualStudioVersion;
+  BOOL zeroConfigurationSupport;
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  const wstring architectureName() const;
 
-#include "resource.h" // main symbols
+  const wstring channelMaskDepth() const;
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+  const wstring magickCoreName() const { return(version == ImageMagickVersion::ImageMagick7 ? L"MagickCore" : L"magick"); };
 
-#include "Shared.h"
+  const wstring platform() const;
+
+  const wstring projectsDirectory() const;
+
+  void setImageMagickVersion6();
+
+private:
+  const wstring buildTypeName() const;
+
+  static wstring getEnvironmentVariable(const wchar_t *name);
+
+  static VisualStudioVersion getVisualStudioVersion();
+  
+  static bool hasVisualStudioFolder(const wchar_t *name);
+};
+

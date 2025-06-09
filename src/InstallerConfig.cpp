@@ -17,31 +17,44 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
 
-#define WINVER 0x0501
+#include "InstallerConfig.h"
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+void InstallerConfig::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
+{
+  if (!filesystem::exists(options.rootDirectory + L"Installer"))
+    return;
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  wstring configFileName=L"Installer\\Inno\\config.isx";
+  versionInfo.write(L"Installer\\Inno\\config.isx.in",configFileName);
 
-#include "resource.h" // main symbols
+  wofstream configFile(options.rootDirectory + configFileName,ios::app);
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+  switch (options.buildType)
+  {
+    case BuildType::Dynamic:
+      configFile << L"#define public MagickDynamicPackage 1" << endl;
+      if (options.architecture != Architecture::Arm64)
+        configFile << L"#define public MagickPerlMagick 1" << endl;
+      break;
+    case BuildType::Static:
+      configFile << L"#define public MagickStaticPackage 1" << endl;
+      break;
+  }
 
-#include "Shared.h"
+  switch (options.architecture)
+  {
+    case Architecture::Arm64:
+      configFile << L"#define public MagickArm64Architecture 1" << endl;
+      break;
+    case Architecture::x64:
+      configFile << L"#define public Magick64BitArchitecture 1" << endl;
+      break;
+  }
+
+  if (options.useHDRI)
+    configFile << L"#define public MagickHDRI 1" << endl;
+
+  if (options.version == ImageMagickVersion::ImageMagick7)
+    configFile << L"#define public MagickVersion7 1" << endl;
+}

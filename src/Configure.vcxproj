@@ -5,13 +5,13 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -26,15 +26,6 @@
       <Platform>ARM64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'Win32'">
-    <PlatformType>x86</PlatformType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x64'">
-    <PlatformType>x64</PlatformType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
-    <PlatformType>arm64</PlatformType>
-  </PropertyGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
@@ -60,10 +51,10 @@
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <LinkIncremental Condition="'$(Configuration)'=='Debug'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)'=='Release'">false</LinkIncremental>
-    <TargetName>Configure.$(Configuration).$(PlatformType)</TargetName>
-    <OutputFolder>..\Artifacts\$(Configuration)\$(PlatformType)</OutputFolder>
-    <OutDir>$(OutputFolder)\bin\</OutDir>
-    <IntDir>$(OutputFolder)\obj\</IntDir>
+    <TargetName>Configure</TargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
@@ -72,6 +63,10 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>.\Debug\Configure/Configure.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug\Configure/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug\Configure/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\Configure/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -82,12 +77,14 @@
       <AdditionalDependencies>rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Debug\Configure/Configure.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Debug\Configure/Configure.tlb</TypeLibraryName>
     </Midl>
     <ResourceCompile>
       <PreprocessorDefinitions>_AFXDLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -102,6 +99,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>.\Release\Configure/Configure.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Release\Configure/</AssemblerListingLocation>
+      <ObjectFileName>.\Release\Configure/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\Configure/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -111,12 +112,49 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalDependencies>rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ProgramDatabaseFile>.\Release\Configure/Configure.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Release\Configure/Configure.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_AFXDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0406</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>.\Release\Configure/Configure.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Release\Configure/</AssemblerListingLocation>
+      <ObjectFileName>.\Release\Configure/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\Configure/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ProgramDatabaseFile>.\Release\Configure/Configure.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TypeLibraryName>.\Release\Configure/Configure.tlb</TypeLibraryName>
     </Midl>
     <ResourceCompile>
       <PreprocessorDefinitions>_AFXDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -124,6 +162,17 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Config.cpp">
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ClCompile Include="Configs.cpp">
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ClCompile Include="ConfigureOptions.cpp" />
+    <ClCompile Include="ConfigureWizard.cpp" />
+    <ClCompile Include="InstallerConfig.cpp" />
+    <ClCompile Include="MagickBaseConfig.cpp" />
+    <ClCompile Include="Notice.cpp" />
     <ClCompile Include="Pages\FinishedPage.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -136,23 +185,19 @@
     <ClCompile Include="CommandLineInfo.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="PerlMagick.cpp" />
     <ClCompile Include="Project.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <ClCompile Include="ProjectFile.cpp">
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
+    <ClCompile Include="Projects.cpp" />
     <ClCompile Include="Solution.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <ClCompile Include="VersionInfo.cpp" />
-    <ClCompile Include="WaitDialog.cpp">
+    <ClCompile Include="ThresholdMap.cpp" />
+    <ClCompile Include="VersionInfo.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="ConfigureApp.cpp">
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
-    <ClCompile Include="ConfigureWizard.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -160,25 +205,34 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="XmlConfigFiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Configure.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Configs.h" />
+    <ClInclude Include="ConfigureOptions.h" />
+    <ClInclude Include="ConfigureWizard.h" />
+    <ClInclude Include="InstallerConfig.h" />
+    <ClInclude Include="MagickBaseConfig.h" />
+    <ClInclude Include="Notice.h" />
     <ClInclude Include="Pages\FinishedPage.h" />
     <ClInclude Include="Pages\TargetPage.h" />
     <ClInclude Include="Pages\WelcomePage.h" />
     <ClInclude Include="CommandLineInfo.h" />
+    <ClInclude Include="PerlMagick.h" />
     <ClInclude Include="Project.h" />
-    <ClInclude Include="ProjectFile.h" />
+    <ClInclude Include="Projects.h" />
     <ClInclude Include="Shared.h" />
     <ClInclude Include="Solution.h" />
+    <ClInclude Include="ThresholdMap.h" />
     <ClInclude Include="VersionInfo.h" />
-    <ClInclude Include="WaitDialog.h" />
     <ClInclude Include="ConfigureApp.h" />
-    <ClInclude Include="ConfigureWizard.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="XmlConfigFiles.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Configure.ico" />

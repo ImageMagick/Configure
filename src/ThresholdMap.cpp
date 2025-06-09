@@ -17,31 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
+#include "ThresholdMap.h"
 
-#define WINVER 0x0501
+void ThresholdMap::write(const ConfigureOptions &options)
+{
+  if (!options.zeroConfigurationSupport)
+    return;
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+  wifstream thresholds(options.rootDirectory + L"Artifacts\\bin\\thresholds.xml");
+  if (!thresholds)
+    return;
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  wofstream thresholdMap(options.rootDirectory + L"ImageMagick\\" + options.magickCoreName() + L"\\threshold-map.h");
+  if (!thresholdMap)
+    throwException(L"Unable to open threshold-map.h");
 
-#include "resource.h" // main symbols
+  thresholdMap << "static const char *const BuiltinMap=" << endl;
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+  wstring line;
+  while (getline(thresholds,line))
+  {
+    if (line.length() == 0)
+      continue;
 
-#include "Shared.h"
+    line=replace(line,L"\"",L"\\\"");
+    thresholdMap << "\"" << line << "\"" << endl;
+  }
+
+  thresholdMap << ";";
+}

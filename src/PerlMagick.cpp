@@ -17,31 +17,35 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
+#include "PerlMagick.h"
 
-#define WINVER 0x0501
+void PerlMagick::configure(const ConfigureOptions &options)
+{
+  filesystem::copy_file(options.rootDirectory + L"Projects\\PerlMagick\\Zip.ps1", options.rootDirectory + L"ImageMagick\\PerlMagick\\Zip.ps1",filesystem::copy_options::overwrite_existing);
 
-#define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+  wifstream makeFileIn(options.rootDirectory + L"Projects\\PerlMagick\\Makefile.PL.in");
+  if (!makeFileIn)
+    return;
 
-#include <afxwin.h>   // MFC core and standard components
-#include <afxext.h>   // MFC extensions
-#include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>   // MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
+  wofstream makeFile(options.rootDirectory + L"ImageMagick\\PerlMagick\\Makefile.PL");
+  if (!makeFile)
+    throwException(L"Unable to open Makefile.PL for writing.");
 
-#include "resource.h" // main symbols
+  wstring libName=magickCoreLibraryName(options);
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+  wstring line;
+  while (getline(makeFileIn,line))
+  {
+    line=replace(line,L"$$LIB_NAME$$",libName);
+    line=replace(line,L"$$PLATFORM$$",options.architectureName());
+    makeFile << line << endl;
+  }
+}
 
-#include "Shared.h"
+wstring PerlMagick::magickCoreLibraryName(const ConfigureOptions &options)
+{
+  if (options.version == ImageMagickVersion::ImageMagick7)
+    return(L"CORE_RL_MagickCore_.a");
+  else
+    return(L"CORE_RL_magick.a");
+}

@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,17 +17,15 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __ConfigureApp__
-#define __ConfigureApp__
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#include "stdafx.h"
+
+#include "ConfigureOptions.h"
+#include "VersionInfo.h"
 
 class ConfigureApp : public CWinApp
 {
 public:
-
   ConfigureApp();
 
   virtual BOOL InitInstance();
@@ -35,8 +33,9 @@ public:
   DECLARE_MESSAGE_MAP()
 
 private:
+  bool attachConsole();
 
-  BOOL Init();
+  BOOL createFiles(ConfigureOptions &options) const;
+
+  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
 };
-
-#endif // __ConfigureApp__
