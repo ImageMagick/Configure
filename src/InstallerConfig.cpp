@@ -17,29 +17,43 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
 
-#include "ConfigureOptions.h"
-#include "VersionInfo.h"
+#include "InstallerConfig.h"
 
-class ConfigureApp : public CWinApp
+void InstallerConfig::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
 {
-public:
-  ConfigureApp();
+  if (!filesystem::exists(options.rootDirectory + L"Installer"))
+    return;
 
-  virtual BOOL InitInstance();
+  wstring configFileName=L"Installer\\Inno\\config.isx";
+  versionInfo.write(L"Installer\\Inno\\config.isx.in",configFileName);
 
-  DECLARE_MESSAGE_MAP()
+  wofstream configFile(options.rootDirectory + configFileName,ios::app);
 
-private:
-  bool attachConsole();
+  if (options.isStaticBuild)
+  {
+    configFile << L"#define public MagickStaticPackage 1" << endl;
+  }
+  else
+  {
+    configFile << L"#define public MagickDynamicPackage 1" << endl;
+    if (options.architecture != Architecture::Arm64)
+      configFile << L"#define public MagickPerlMagick 1" << endl;
+  }
 
-  void cleanupFolders(ConfigureOptions &options) const;
+  switch (options.architecture)
+  {
+    case Architecture::Arm64:
+      configFile << L"#define public MagickArm64Architecture 1" << endl;
+      break;
+    case Architecture::x64:
+      configFile << L"#define public Magick64BitArchitecture 1" << endl;
+      break;
+  }
 
-  BOOL createFiles(ConfigureOptions &options) const;
+  if (options.useHDRI)
+    configFile << L"#define public MagickHDRI 1" << endl;
 
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
-};
+  if (options.isImageMagick7)
+    configFile << L"#define public MagickVersion7 1" << endl;
+}

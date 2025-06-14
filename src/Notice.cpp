@@ -17,29 +17,33 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
 
-#include "ConfigureOptions.h"
-#include "VersionInfo.h"
+#include "Notice.h"
 
-class ConfigureApp : public CWinApp
+void Notice::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
 {
-public:
-  ConfigureApp();
+  wofstream notice(options.rootDirectory + L"Artifacts\\NOTICE.txt");
+  if (!notice)
+    throwException(L"Unable to open NOTICE.txt");
 
-  virtual BOOL InitInstance();
+  notice << "[ Imagemagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
+  notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
 
-  DECLARE_MESSAGE_MAP()
+  wstring licensesDirectory=options.rootDirectory + L"Artifacts\\license\\";
+  for (const auto& entry : filesystem::directory_iterator(licensesDirectory))
+  {
+    if (!entry.is_regular_file())
+      continue;
 
-private:
-  bool attachConsole();
+    notice << readLicense(entry.path().wstring()) << endl << endl;
+  }
+}
 
-  void cleanupFolders(ConfigureOptions &options) const;
+const wstring Notice::readLicense(const wstring &fileName)
+{
+  wifstream file(fileName);
+  if (!file)
+    throwException(L"Unable to open license file: " + fileName);
 
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
-};
+  return(trim(wstring((istreambuf_iterator<wchar_t>(file)),istreambuf_iterator<wchar_t>())));
+}

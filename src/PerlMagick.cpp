@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,84 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
-#include "WaitDialog.h"
+#include "PerlMagick.h"
 
-WaitDialog::WaitDialog() : CDialog ()
+void PerlMagick::configure(const ConfigureOptions &options)
 {
-  Create(IDD_WAITDIALOG);
-}
+  filesystem::copy_file(options.rootDirectory + L"Build\\PerlMagick\\Zip.ps1", options.rootDirectory + L"ImageMagick\\PerlMagick\\Zip.ps1",filesystem::copy_options::overwrite_existing);
 
-WaitDialog::~WaitDialog()
-{
-  if (!IsWindow(m_hWnd))
-    return;
+  wifstream makeFileIn(options.rootDirectory + L"Build\\PerlMagick\\Makefile.PL.in");
+  if (!makeFileIn)
+    throwException(L"Unable to open Makefile.PL.in for reading.");
 
-  DestroyWindow();
-}
+  wofstream makeFile(options.rootDirectory + L"ImageMagick\\PerlMagick\\Makefile.PL");
+  if (!makeFile)
+    throwException(L"Unable to open Makefile.PL for writing.");
 
-int WaitDialog::getSteps() const
-{
-  return(_steps);
-}
+  wstring libName=magickCoreLibraryName(options);
 
-void WaitDialog::setSteps(const int steps)
-{
-  ShowWindow(SW_SHOW);
-  _steps=steps;
-  _current=0;
-}
-
-void WaitDialog::nextStep(const wstring &description)
-{
-  setPercentComplete((++_current * 100)/_steps);
-  setMessageText(description);
-  pump();
-}
-
-void WaitDialog::pump()
-{
-  LONG
-    idle;
-
-  MSG
-    msg;
-
-  while (PeekMessage(&msg,NULL,0,0,PM_NOREMOVE))
+  wstring line;
+  while (getline(makeFileIn,line))
   {
-    if (!AfxGetApp()->PumpMessage())
-      PostQuitMessage(0);
+    line=replace(line,L"$$LIB_NAME$$",libName);
+    line=replace(line,L"$$PLATFORM$$",options.architectureName());
+    makeFile << line << endl;
   }
-
-  idle=0;
-  while(AfxGetApp()->OnIdle(idle++));
 }
 
-void WaitDialog::setMessageText(const wstring &text)
+wstring PerlMagick::magickCoreLibraryName(const ConfigureOptions &options)
 {
-  CStatic
-    *control;
-
-  if (!IsWindow(m_hWnd))
-    return;
-
-  control=(CStatic *) GetDlgItem(IDC_MSGCTRL);
-  control->SetWindowText(text.c_str());
-}
-
-void WaitDialog::setPercentComplete(int percent)
-{
-  CProgressCtrl
-    *control;
-
-  if (!IsWindow(m_hWnd))
-    return;
-
-  if (percent < 0)
-    percent=0;
-  else if (percent > 100)
-    percent=100;
-
-  control=(CProgressCtrl *) GetDlgItem(IDC_PROGRESSCTRL);
-  control->SetPos(percent);
+  return(L"CORE_RL_" + options.magickCoreName() + L"_.a");
 }

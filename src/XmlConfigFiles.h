@@ -21,25 +21,12 @@
 #include "stdafx.h"
 
 #include "ConfigureOptions.h"
-#include "VersionInfo.h"
 
-class ConfigureApp : public CWinApp
+class XmlConfigFiles
 {
 public:
-  ConfigureApp();
-
-  virtual BOOL InitInstance();
-
-  DECLARE_MESSAGE_MAP()
+  static void write(const ConfigureOptions &options);
 
 private:
-  bool attachConsole();
-
-  void cleanupFolders(ConfigureOptions &options) const;
-
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
+  static const wstring getPolicyFileName(const ConfigureOptions &options);
 };

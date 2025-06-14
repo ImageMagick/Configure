@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,35 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __WaitDialog__
-#define __WaitDialog__
+#include "ThresholdMap.h"
 
-#include "resource.h"
-
-class WaitDialog : public CDialog
+void ThresholdMap::write(const ConfigureOptions &options)
 {
-public:
+  if (!options.zeroConfigurationSupport)
+    return;
 
-  WaitDialog();
+  wifstream thresholds(options.rootDirectory + L"Artifacts\\bin\\thresholds.xml");
+  if (!thresholds)
+    throwException(L"Unable to open thresholds.xml");
 
-  ~WaitDialog();
+  wofstream thresholdMap(options.rootDirectory + L"ImageMagick\\" + options.magickCoreName() + L"\\threshold-map.h");
+  if (!thresholdMap)
+    throwException(L"Unable to open threshold-map.h");
 
-  int getSteps() const;
+  thresholdMap << "static const char *const BuiltinMap=" << endl;
 
-  void setSteps(const int steps);
+  wstring line;
+  while (getline(thresholds,line))
+  {
+    if (line.length() == 0)
+      continue;
 
-  void nextStep(const wstring &description);
+    line=replace(line,L"\"",L"\\\"");
+    thresholdMap << "\"" << line << "\"" << endl;
+  }
 
-private:
-
-  void pump();
-
-  void setMessageText(const wstring &text);
-
-  void setPercentComplete(int percent);
-
-  int _steps;
-  int _current;
-};
-
-#endif // __WaitDialog__
+  thresholdMap << ";";
+}

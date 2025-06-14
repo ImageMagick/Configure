@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,23 +17,19 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __FinishedPage__
-#define __FinishedPage__
+#pragma once
+#include "../stdafx.h"
 
 class FinishedPage : public CPropertyPage
 {
   DECLARE_DYNCREATE(FinishedPage)
 
 public:
-
   FinishedPage();
-
-  ~FinishedPage();
 
   virtual BOOL OnSetActive();
 
 protected:
-
   virtual void DoDataExchange(CDataExchange* pDX);
 
   virtual BOOL OnInitDialog();
@@ -41,8 +37,5 @@ protected:
   DECLARE_MESSAGE_MAP()
 
 private:
-
   CString _text;
 };
-
-#endif // __FinishedPage__
