@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,63 +17,31 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __Solution__
-#define __Solution__
+#pragma once
+#include "stdafx.h"
 
+#include "ConfigureOptions.h"
 #include "Project.h"
-#include "ConfigureWizard.h"
-#include "VersionInfo.h"
-#include "WaitDialog.h"
 
 class Solution
 {
 public:
-  Solution(const ConfigureWizard &wizard);
-
-  int loadProjectFiles() const;
-
-  void loadProjects();
-
-  void write(WaitDialog &waitDialog) const;
+  static void write(const ConfigureOptions &options,const vector<Project> &projects);
 
 private:
+  static const wstring solutionFolder(const Project & project);
 
-  void addConfigFolder(wofstream &file) const;
+  static const wstring solutionName(const ConfigureOptions &options);
 
-  void addNestedProjects(wofstream &file,const wstring &name,const wstring &prefix) const;
+  static void writeConfigFolder(wofstream& file,const ConfigureOptions& options);
 
-  void addProjects(wofstream &file,const wstring &prefix) const;
+  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
 
-  void addSolutionFolder(wofstream &file,const wstring &name,const wstring &prefix) const;
+  static void writeProjects(wofstream& file,const vector<Project>& projects);
 
-  void checkKeyword(const wstring keyword) const;
+  static void writeProjectsConfiguration(wofstream& file,const ConfigureOptions& options,const vector<Project>& projects);
 
-  void createConfigFiles() const;
+  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
 
-  const wstring getFileName() const;
-
-  void loadProjectsFromFolder(const wstring &folder,const wstring &filesFolder);
-
-  void replaceVersionVariables(const VersionInfo &versionInfo,wifstream &input,wofstream &output) const;
-
-  void writeInstallerConfig(const VersionInfo &versionInfo) const;
-
-  void writeMagickBaseConfig() const;
-
-  void writeMakeFile() const;
-
-  void writeNotice(const VersionInfo &versionInfo) const;
-
-  void writeThresholdMap() const;
-
-  void writeVersion(const VersionInfo &versionInfo) const;
-
-  void writeVersion(const VersionInfo &versionInfo,const wstring &input,const wstring &output) const;
-
-  void write(wofstream &file) const;
-
-  vector<Project*> _projects;
-  const ConfigureWizard &_wizard;
+  static void writeVisualStudioVersion(wofstream& file,const ConfigureOptions &options);
 };
-
-#endif // __Solution__

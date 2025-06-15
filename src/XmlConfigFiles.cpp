@@ -17,29 +17,28 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
+#include "XmlConfigFiles.h"
 
-#include "ConfigureOptions.h"
-#include "VersionInfo.h"
-
-class ConfigureApp : public CWinApp
+const wstring XmlConfigFiles::getPolicyFileName(const ConfigureOptions &options)
 {
-public:
-  ConfigureApp();
+  switch(options.policyConfig)
+  {
+    case PolicyConfig::Limited: return L"policy-limited.xml";
+    case PolicyConfig::Open: return L"policy-open.xml";
+    case PolicyConfig::Secure: return L"policy-secure.xml";
+    case PolicyConfig::WebSafe: return L"policy-websafe.xml";
+    default: throwException(L"Unknown policy configuration type.");
+  }
+}
 
-  virtual BOOL InitInstance();
+void XmlConfigFiles::write(const ConfigureOptions &options)
+{
+  const wstring configFolder=options.rootDirectory + L"ImageMagick\\config\\";
+  const wstring targetFolder=options.rootDirectory + L"Artifacts\\bin\\";
 
-  DECLARE_MESSAGE_MAP()
+  filesystem::copy_file(configFolder + getPolicyFileName(options),targetFolder + L"policy.xml",filesystem::copy_options::overwrite_existing);
 
-private:
-  bool attachConsole();
-
-  void cleanupFolders(ConfigureOptions &options) const;
-
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
-};
+  vector<wstring> xmlFiles = { L"colors.xml", L"english.xml", L"locale.xml", L"log.xml", L"mime.xml", L"thresholds.xml" };
+  for (auto& xmlFile : xmlFiles)
+    filesystem::copy_file(configFolder + xmlFile,targetFolder + xmlFile,filesystem::copy_options::overwrite_existing);
+}

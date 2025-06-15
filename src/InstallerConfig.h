@@ -23,23 +23,9 @@
 #include "ConfigureOptions.h"
 #include "VersionInfo.h"
 
-class ConfigureApp : public CWinApp
+class InstallerConfig
 {
 public:
-  ConfigureApp();
-
-  virtual BOOL InitInstance();
-
-  DECLARE_MESSAGE_MAP()
-
-private:
-  bool attachConsole();
-
-  void cleanupFolders(ConfigureOptions &options) const;
-
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
+  static void write(const ConfigureOptions &options,const VersionInfo &versionInfo);
 };
+

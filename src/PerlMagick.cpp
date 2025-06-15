@@ -17,29 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
+#include "PerlMagick.h"
 
-#include "ConfigureOptions.h"
-#include "VersionInfo.h"
-
-class ConfigureApp : public CWinApp
+void PerlMagick::configure(const ConfigureOptions &options)
 {
-public:
-  ConfigureApp();
+  filesystem::copy_file(options.rootDirectory + L"Build\\PerlMagick\\Zip.ps1", options.rootDirectory + L"ImageMagick\\PerlMagick\\Zip.ps1",filesystem::copy_options::overwrite_existing);
 
-  virtual BOOL InitInstance();
+  wifstream makeFileIn(options.rootDirectory + L"Build\\PerlMagick\\Makefile.PL.in");
+  if (!makeFileIn)
+    throwException(L"Unable to open Makefile.PL.in for reading.");
 
-  DECLARE_MESSAGE_MAP()
+  wofstream makeFile(options.rootDirectory + L"ImageMagick\\PerlMagick\\Makefile.PL");
+  if (!makeFile)
+    throwException(L"Unable to open Makefile.PL for writing.");
 
-private:
-  bool attachConsole();
+  wstring libName=magickCoreLibraryName(options);
 
-  void cleanupFolders(ConfigureOptions &options) const;
+  wstring line;
+  while (getline(makeFileIn,line))
+  {
+    line=replace(line,L"$$LIB_NAME$$",libName);
+    line=replace(line,L"$$PLATFORM$$",options.architectureName());
+    makeFile << line << endl;
+  }
+}
 
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
-};
+wstring PerlMagick::magickCoreLibraryName(const ConfigureOptions &options)
+{
+  return(L"CORE_RL_" + options.magickCoreName() + L"_.a");
+}

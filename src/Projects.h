@@ -20,26 +20,27 @@
 #pragma once
 #include "stdafx.h"
 
+#include "Config.h"
 #include "ConfigureOptions.h"
-#include "VersionInfo.h"
+#include "Project.h"
 
-class ConfigureApp : public CWinApp
+class Projects
 {
 public:
-  ConfigureApp();
+  static vector<Project> create(const ConfigureOptions &options,vector<Config> &configs);
 
-  virtual BOOL InitInstance();
-
-  DECLARE_MESSAGE_MAP()
+  static void write(const vector<Project> &projects);
 
 private:
-  bool attachConsole();
+  static void createCoderProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
 
-  void cleanupFolders(ConfigureOptions &options) const;
+  static void createDemoProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
 
-  BOOL createFiles(ConfigureOptions &options) const;
+  static void createFilterProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
 
-  const wstring getRootDirectory() const;
+  static void createFuzzProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
 
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
+  static void createUtilitiesProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createUtilityProject(const Project &utilitiesProject,wstring name,wstring fileName,vector<Project> &projects);
 };

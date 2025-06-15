@@ -20,26 +20,46 @@
 #pragma once
 #include "stdafx.h"
 
-#include "ConfigureOptions.h"
-#include "VersionInfo.h"
-
-class ConfigureApp : public CWinApp
+class ConfigureOptions
 {
 public:
-  ConfigureApp();
+  ConfigureOptions(const wstring &rootDirectory);
 
-  virtual BOOL InitInstance();
+  Architecture architecture;
+  BOOL enableDpc;
+  BOOL excludeAliases;
+  BOOL excludeDeprecated;
+  BOOL includeIncompatibleLicense;
+  BOOL includeOptional;
+  BOOL installedSupport;
+  BOOL isStaticBuild;
+  BOOL linkRuntime;
+  PolicyConfig policyConfig;
+  QuantumDepth quantumDepth;
+  wstring rootDirectory;
+  BOOL useHDRI;
+  BOOL useOpenCL;
+  BOOL useOpenMP;
+  bool isImageMagick7;
+  VisualStudioVersion visualStudioVersion;
+  BOOL zeroConfigurationSupport;
 
-  DECLARE_MESSAGE_MAP()
+  const wstring architectureName() const;
+
+  const wstring channelMaskDepth() const;
+
+  const wstring magickCoreName() const { return(isImageMagick7 ? L"MagickCore" : L"magick"); };
+
+  const wstring platform() const;
+
+  const wstring projectsDirectory() const;
+
+  void checkImageMagickVersion();
 
 private:
-  bool attachConsole();
+  static wstring getEnvironmentVariable(const wchar_t *name);
 
-  void cleanupFolders(ConfigureOptions &options) const;
-
-  BOOL createFiles(ConfigureOptions &options) const;
-
-  const wstring getRootDirectory() const;
-
-  void writeImageMagickFiles(const ConfigureOptions &options,const VersionInfo &versionInfo) const;
+  static VisualStudioVersion getVisualStudioVersion();
+  
+  static bool hasVisualStudioFolder(const wchar_t *name);
 };

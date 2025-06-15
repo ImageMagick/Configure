@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,35 +17,29 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __WaitDialog__
-#define __WaitDialog__
+#pragma once
+#include "stdafx.h"
 
-#include "resource.h"
+#include "Config.h"
+#include "ConfigureOptions.h"
 
-class WaitDialog : public CDialog
+class Configs
 {
 public:
-
-  WaitDialog();
-
-  ~WaitDialog();
-
-  int getSteps() const;
-
-  void setSteps(const int steps);
-
-  void nextStep(const wstring &description);
+  static vector<Config> load(const ConfigureOptions &options);
 
 private:
+  static void addConfig(Config &config,const ConfigureOptions &options,vector<Config> &configs);
 
-  void pump();
+  static void loadCoders(const ConfigureOptions &options,vector<Config> &configs);
 
-  void setMessageText(const wstring &text);
+  static void loadDirectory(const ConfigureOptions &options,const wstring directory,vector<Config> &configs);
 
-  void setPercentComplete(int percent);
+  static void loadProject(const ConfigureOptions &options,const wstring &name,const wstring &directory,vector<Config> &configs);
 
-  int _steps;
-  int _current;
+  static Config loadProjectConfig(const ConfigureOptions &options,const wstring &name,const wstring &directory);
+
+  static void removeInvalidReferences(const ConfigureOptions &options,vector<Config> &configs);
+
+  static void validate(const ConfigureOptions &options,const vector<Config> &configs);
 };
-
-#endif // __WaitDialog__
