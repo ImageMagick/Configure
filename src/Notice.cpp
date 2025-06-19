@@ -17,27 +17,33 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "../stdafx.h"
 
-#include "../ConfigureOptions.h"
+#include "Notice.h"
 
-class TargetPage : public CPropertyPage
+void Notice::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
 {
-  DECLARE_DYNCREATE(TargetPage)
+  wofstream notice(options.rootDirectory + L"Artifacts\\NOTICE.txt");
+  if (!notice)
+    throwException(L"Unable to open NOTICE.txt");
 
-public:
-  TargetPage();
+  notice << "[ Imagemagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
+  notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
 
-  void setOptions(ConfigureOptions &options);
+  wstring licensesDirectory=options.rootDirectory + L"Artifacts\\license\\";
+  for (const auto& entry : filesystem::directory_iterator(licensesDirectory))
+  {
+    if (!entry.is_regular_file())
+      continue;
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+    notice << readLicense(entry.path().wstring()) << endl << endl;
+  }
+}
 
-  virtual BOOL OnInitDialog();
+const wstring Notice::readLicense(const wstring &fileName)
+{
+  wifstream file(fileName);
+  if (!file)
+    throwException(L"Unable to open license file: " + fileName);
 
-  DECLARE_MESSAGE_MAP()
-
-private:
-  ConfigureOptions* _options;
-};
+  return(trim(wstring((istreambuf_iterator<wchar_t>(file)),istreambuf_iterator<wchar_t>())));
+}

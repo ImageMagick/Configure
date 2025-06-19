@@ -17,27 +17,43 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "../stdafx.h"
 
-#include "../ConfigureOptions.h"
+#include "InstallerConfig.h"
 
-class TargetPage : public CPropertyPage
+void InstallerConfig::write(const ConfigureOptions &options,const VersionInfo &versionInfo)
 {
-  DECLARE_DYNCREATE(TargetPage)
+  if (!filesystem::exists(options.rootDirectory + L"Installer"))
+    return;
 
-public:
-  TargetPage();
+  wstring configFileName=L"Installer\\Inno\\config.isx";
+  versionInfo.write(L"Installer\\Inno\\config.isx.in",configFileName);
 
-  void setOptions(ConfigureOptions &options);
+  wofstream configFile(options.rootDirectory + configFileName,ios::app);
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+  if (options.isStaticBuild)
+  {
+    configFile << L"#define public MagickStaticPackage 1" << endl;
+  }
+  else
+  {
+    configFile << L"#define public MagickDynamicPackage 1" << endl;
+    if (options.architecture != Architecture::Arm64)
+      configFile << L"#define public MagickPerlMagick 1" << endl;
+  }
 
-  virtual BOOL OnInitDialog();
+  switch (options.architecture)
+  {
+    case Architecture::Arm64:
+      configFile << L"#define public MagickArm64Architecture 1" << endl;
+      break;
+    case Architecture::x64:
+      configFile << L"#define public Magick64BitArchitecture 1" << endl;
+      break;
+  }
 
-  DECLARE_MESSAGE_MAP()
+  if (options.useHDRI)
+    configFile << L"#define public MagickHDRI 1" << endl;
 
-private:
-  ConfigureOptions* _options;
-};
+  if (options.isImageMagick7)
+    configFile << L"#define public MagickVersion7 1" << endl;
+}

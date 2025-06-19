@@ -17,27 +17,28 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "../stdafx.h"
+#include "XmlConfigFiles.h"
 
-#include "../ConfigureOptions.h"
-
-class TargetPage : public CPropertyPage
+const wstring XmlConfigFiles::getPolicyFileName(const ConfigureOptions &options)
 {
-  DECLARE_DYNCREATE(TargetPage)
+  switch(options.policyConfig)
+  {
+    case PolicyConfig::Limited: return L"policy-limited.xml";
+    case PolicyConfig::Open: return L"policy-open.xml";
+    case PolicyConfig::Secure: return L"policy-secure.xml";
+    case PolicyConfig::WebSafe: return L"policy-websafe.xml";
+    default: throwException(L"Unknown policy configuration type.");
+  }
+}
 
-public:
-  TargetPage();
+void XmlConfigFiles::write(const ConfigureOptions &options)
+{
+  const wstring configFolder=options.rootDirectory + L"ImageMagick\\config\\";
+  const wstring targetFolder=options.rootDirectory + L"Artifacts\\bin\\";
 
-  void setOptions(ConfigureOptions &options);
+  filesystem::copy_file(configFolder + getPolicyFileName(options),targetFolder + L"policy.xml",filesystem::copy_options::overwrite_existing);
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
-
-  virtual BOOL OnInitDialog();
-
-  DECLARE_MESSAGE_MAP()
-
-private:
-  ConfigureOptions* _options;
-};
+  vector<wstring> xmlFiles = { L"colors.xml", L"english.xml", L"locale.xml", L"log.xml", L"mime.xml", L"thresholds.xml" };
+  for (auto& xmlFile : xmlFiles)
+    filesystem::copy_file(configFolder + xmlFile,targetFolder + xmlFile,filesystem::copy_options::overwrite_existing);
+}

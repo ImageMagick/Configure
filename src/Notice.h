@@ -18,26 +18,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../ConfigureOptions.h"
+#include "ConfigureOptions.h"
+#include "VersionInfo.h"
 
-class TargetPage : public CPropertyPage
+class Notice
 {
-  DECLARE_DYNCREATE(TargetPage)
-
 public:
-  TargetPage();
-
-  void setOptions(ConfigureOptions &options);
-
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
-
-  virtual BOOL OnInitDialog();
-
-  DECLARE_MESSAGE_MAP()
+  static void write(const ConfigureOptions &options,const VersionInfo &versionInfo);
 
 private:
-  ConfigureOptions* _options;
+  static const wstring readLicense(const wstring &fileName);
 };

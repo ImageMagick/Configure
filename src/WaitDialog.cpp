@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,10 +17,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
 #include "WaitDialog.h"
 
-WaitDialog::WaitDialog() : CDialog ()
+WaitDialog::WaitDialog()
+  : CDialog(),
+    _steps(0),
+    _current(0)
 {
   Create(IDD_WAITDIALOG);
 }
@@ -31,11 +33,6 @@ WaitDialog::~WaitDialog()
     return;
 
   DestroyWindow();
-}
-
-int WaitDialog::getSteps() const
-{
-  return(_steps);
 }
 
 void WaitDialog::setSteps(const int steps)
@@ -76,7 +73,10 @@ void WaitDialog::setMessageText(const wstring &text)
     *control;
 
   if (!IsWindow(m_hWnd))
+  {
+    cout << text.c_str() << endl;
     return;
+  }
 
   control=(CStatic *) GetDlgItem(IDC_MSGCTRL);
   control->SetWindowText(text.c_str());

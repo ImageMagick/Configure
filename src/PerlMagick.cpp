@@ -17,27 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "../stdafx.h"
+#include "PerlMagick.h"
 
-#include "../ConfigureOptions.h"
-
-class TargetPage : public CPropertyPage
+void PerlMagick::configure(const ConfigureOptions &options)
 {
-  DECLARE_DYNCREATE(TargetPage)
+  filesystem::copy_file(options.rootDirectory + L"Build\\PerlMagick\\Zip.ps1", options.rootDirectory + L"ImageMagick\\PerlMagick\\Zip.ps1",filesystem::copy_options::overwrite_existing);
 
-public:
-  TargetPage();
+  wifstream makeFileIn(options.rootDirectory + L"Build\\PerlMagick\\Makefile.PL.in");
+  if (!makeFileIn)
+    throwException(L"Unable to open Makefile.PL.in for reading.");
 
-  void setOptions(ConfigureOptions &options);
+  wofstream makeFile(options.rootDirectory + L"ImageMagick\\PerlMagick\\Makefile.PL");
+  if (!makeFile)
+    throwException(L"Unable to open Makefile.PL for writing.");
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+  wstring libName=magickCoreLibraryName(options);
 
-  virtual BOOL OnInitDialog();
+  wstring line;
+  while (getline(makeFileIn,line))
+  {
+    line=replace(line,L"$$LIB_NAME$$",libName);
+    line=replace(line,L"$$PLATFORM$$",options.architectureName());
+    makeFile << line << endl;
+  }
+}
 
-  DECLARE_MESSAGE_MAP()
-
-private:
-  ConfigureOptions* _options;
-};
+wstring PerlMagick::magickCoreLibraryName(const ConfigureOptions &options)
+{
+  return(L"CORE_RL_" + options.magickCoreName() + L"_.a");
+}

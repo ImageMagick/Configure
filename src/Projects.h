@@ -18,26 +18,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../ConfigureOptions.h"
+#include "Config.h"
+#include "ConfigureOptions.h"
+#include "Project.h"
 
-class TargetPage : public CPropertyPage
+class Projects
 {
-  DECLARE_DYNCREATE(TargetPage)
-
 public:
-  TargetPage();
+  static vector<Project> create(const ConfigureOptions &options,vector<Config> &configs);
 
-  void setOptions(ConfigureOptions &options);
-
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
-
-  virtual BOOL OnInitDialog();
-
-  DECLARE_MESSAGE_MAP()
+  static void write(const vector<Project> &projects);
 
 private:
-  ConfigureOptions* _options;
+  static void createCoderProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createDemoProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createFilterProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createFuzzProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createUtilitiesProjects(const ConfigureOptions &options,vector<Config> &configs,vector<Project> &projects);
+
+  static void createUtilityProject(const Project &utilitiesProject,wstring name,wstring fileName,vector<Project> &projects);
 };

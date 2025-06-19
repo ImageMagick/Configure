@@ -1,14 +1,23 @@
-// stdafx.h : include file for standard system include files,
-//  or project specific include files that are used frequently, but
-//      are changed infrequently
-//
-
-#ifndef __STDAFX__
-#define __STDAFX__
-
-#if _MSC_VER > 1000
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
+%  dedicated to making software imaging solutions freely available.           %
+%                                                                             %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
+%                                                                             %
+%    http://www.imagemagick.org/script/license.php                            %
+%                                                                             %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
 #pragma once
-#endif // _MSC_VER > 1000
 
 #define WINVER 0x0501
 
@@ -23,12 +32,16 @@
 
 #include "resource.h" // main symbols
 
-#include <string>
-#include <vector>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <numeric>
+#include <optional>
+#include <set>
+#include <string>
 #include <sstream>
-using namespace std;
+#include <vector>
+#include <unordered_map>
 
-//#pragma warning(disable : 4786)
-#endif // __STDAFX__
+#include "Shared.h"

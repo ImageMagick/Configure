@@ -18,26 +18,47 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../ConfigureOptions.h"
-
-class TargetPage : public CPropertyPage
+class ConfigureOptions
 {
-  DECLARE_DYNCREATE(TargetPage)
-
 public:
-  TargetPage();
+  ConfigureOptions(const wstring &rootDirectory);
 
-  void setOptions(ConfigureOptions &options);
+  Architecture architecture;
+  BOOL enableDpc;
+  BOOL excludeDeprecated;
+  BOOL includeIncompatibleLicense;
+  BOOL includeOptional;
+  BOOL installedSupport;
+  BOOL isStaticBuild;
+  BOOL linkRuntime;
+  PolicyConfig policyConfig;
+  QuantumDepth quantumDepth;
+  wstring rootDirectory;
+  BOOL useHDRI;
+  BOOL useOpenCL;
+  BOOL useOpenMP;
+  bool isImageMagick7;
+  VisualStudioVersion visualStudioVersion;
+  BOOL zeroConfigurationSupport;
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+  const wstring architectureName() const;
 
-  virtual BOOL OnInitDialog();
+  const wstring channelMaskDepth() const;
 
-  DECLARE_MESSAGE_MAP()
+  const wstring magickCoreName() const { return(isImageMagick7 ? L"MagickCore" : L"magick"); };
+
+  const wstring platform() const;
+
+  const wstring projectsDirectory() const;
+
+  void checkImageMagickVersion();
 
 private:
-  ConfigureOptions* _options;
+  static wstring getEnvironmentVariable(const wchar_t *name);
+
+  static VisualStudioVersion getVisualStudioVersion();
+  
+  static bool hasVisualStudioFolder(const wchar_t *name);
 };

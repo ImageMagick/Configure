@@ -17,27 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "../stdafx.h"
+#include "ThresholdMap.h"
 
-#include "../ConfigureOptions.h"
-
-class TargetPage : public CPropertyPage
+void ThresholdMap::write(const ConfigureOptions &options)
 {
-  DECLARE_DYNCREATE(TargetPage)
+  if (!options.zeroConfigurationSupport)
+    return;
 
-public:
-  TargetPage();
+  wifstream thresholds(options.rootDirectory + L"Artifacts\\bin\\thresholds.xml");
+  if (!thresholds)
+    throwException(L"Unable to open thresholds.xml");
 
-  void setOptions(ConfigureOptions &options);
+  wofstream thresholdMap(options.rootDirectory + L"ImageMagick\\" + options.magickCoreName() + L"\\threshold-map.h");
+  if (!thresholdMap)
+    throwException(L"Unable to open threshold-map.h");
 
-protected:
-  virtual void DoDataExchange(CDataExchange* pDX);
+  thresholdMap << "static const char *const BuiltinMap=" << endl;
 
-  virtual BOOL OnInitDialog();
+  wstring line;
+  while (getline(thresholds,line))
+  {
+    if (line.length() == 0)
+      continue;
 
-  DECLARE_MESSAGE_MAP()
+    line=replace(line,L"\"",L"\\\"");
+    thresholdMap << "\"" << line << "\"" << endl;
+  }
 
-private:
-  ConfigureOptions* _options;
-};
+  thresholdMap << ";";
+}
