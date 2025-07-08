@@ -17,31 +17,43 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
 
-#include "Options.h"
-#include "Project.h"
+#include "InstallerConfig.h"
 
-class Solution
+void InstallerConfig::write(const Options &options,const VersionInfo &versionInfo)
 {
-public:
-  static void write(const Options &options,const vector<Project> &projects);
+  if (!filesystem::exists(options.rootDirectory + L"Installer"))
+    return;
 
-private:
-  static const wstring solutionFolder(const Project & project);
+  wstring configFileName=L"Installer\\Inno\\config.isx";
+  versionInfo.write(L"Installer\\Inno\\config.isx.in",configFileName);
 
-  static const wstring solutionName(const Options &options);
+  wofstream configFile(options.rootDirectory + configFileName,ios::app);
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+  if (options.isStaticBuild)
+  {
+    configFile << L"#define public MagickStaticPackage 1" << endl;
+  }
+  else
+  {
+    configFile << L"#define public MagickDynamicPackage 1" << endl;
+    if (options.architecture != Architecture::Arm64)
+      configFile << L"#define public MagickPerlMagick 1" << endl;
+  }
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+  switch (options.architecture)
+  {
+    case Architecture::Arm64:
+      configFile << L"#define public MagickArm64Architecture 1" << endl;
+      break;
+    case Architecture::x64:
+      configFile << L"#define public Magick64BitArchitecture 1" << endl;
+      break;
+  }
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
+  if (options.useHDRI)
+    configFile << L"#define public MagickHDRI 1" << endl;
 
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
-};
+  if (options.isImageMagick7)
+    configFile << L"#define public MagickVersion7 1" << endl;
+}

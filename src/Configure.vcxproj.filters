@@ -3,12 +3,9 @@
   <ItemGroup>
     <ClCompile Include="CommandLineInfo.cpp" />
     <ClCompile Include="Project.cpp" />
-    <ClCompile Include="ProjectFile.cpp" />
     <ClCompile Include="Solution.cpp" />
     <ClCompile Include="VersionInfo.cpp" />
-    <ClCompile Include="WaitDialog.cpp" />
     <ClCompile Include="ConfigureApp.cpp" />
-    <ClCompile Include="ConfigureWizard.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Pages\FinishedPage.cpp">
       <Filter>Pages</Filter>
@@ -19,17 +16,26 @@
     <ClCompile Include="Pages\WelcomePage.cpp">
       <Filter>Pages</Filter>
     </ClCompile>
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Configs.cpp" />
+    <ClCompile Include="Options.cpp" />
+    <ClCompile Include="Projects.cpp" />
+    <ClCompile Include="ConfigureWizard.cpp" />
+    <ClCompile Include="PerlMagick.cpp" />
+    <ClCompile Include="XmlConfigFiles.cpp" />
+    <ClCompile Include="MagickBaseConfig.cpp" />
+    <ClCompile Include="ThresholdMap.cpp" />
+    <ClCompile Include="Notice.cpp" />
+    <ClCompile Include="InstallerConfig.cpp" />
+    <ClCompile Include="WaitDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineInfo.h" />
     <ClInclude Include="Project.h" />
-    <ClInclude Include="ProjectFile.h" />
     <ClInclude Include="Shared.h" />
     <ClInclude Include="Solution.h" />
     <ClInclude Include="VersionInfo.h" />
-    <ClInclude Include="WaitDialog.h" />
     <ClInclude Include="ConfigureApp.h" />
-    <ClInclude Include="ConfigureWizard.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Pages\FinishedPage.h">
@@ -41,6 +47,18 @@
     <ClInclude Include="Pages\WelcomePage.h">
       <Filter>Pages</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Configs.h" />
+    <ClInclude Include="Options.h" />
+    <ClInclude Include="Projects.h" />
+    <ClInclude Include="ConfigureWizard.h" />
+    <ClInclude Include="PerlMagick.h" />
+    <ClInclude Include="XmlConfigFiles.h" />
+    <ClInclude Include="MagickBaseConfig.h" />
+    <ClInclude Include="ThresholdMap.h" />
+    <ClInclude Include="Notice.h" />
+    <ClInclude Include="InstallerConfig.h" />
+    <ClInclude Include="WaitDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Configure.rc" />

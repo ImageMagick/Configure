@@ -21,27 +21,12 @@
 #include "stdafx.h"
 
 #include "Options.h"
-#include "Project.h"
 
-class Solution
+class PerlMagick
 {
 public:
-  static void write(const Options &options,const vector<Project> &projects);
+  static void configure(const Options &options);
 
 private:
-  static const wstring solutionFolder(const Project & project);
-
-  static const wstring solutionName(const Options &options);
-
-  static void writeConfigFolder(wofstream& file,const Options& options);
-
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
-
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
+  static wstring magickCoreLibraryName(const Options &options);
 };

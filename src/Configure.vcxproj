@@ -124,6 +124,12 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Configs.cpp" />
+    <ClCompile Include="Options.cpp" />
+    <ClCompile Include="InstallerConfig.cpp" />
+    <ClCompile Include="MagickBaseConfig.cpp" />
+    <ClCompile Include="Notice.cpp" />
     <ClCompile Include="Pages\FinishedPage.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -136,19 +142,16 @@
     <ClCompile Include="CommandLineInfo.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="PerlMagick.cpp" />
     <ClCompile Include="Project.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
-    <ClCompile Include="ProjectFile.cpp">
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
+    <ClCompile Include="Projects.cpp" />
     <ClCompile Include="Solution.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="ThresholdMap.cpp" />
     <ClCompile Include="VersionInfo.cpp" />
-    <ClCompile Include="WaitDialog.cpp">
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-    </ClCompile>
     <ClCompile Include="ConfigureApp.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -160,25 +163,36 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <ClCompile Include="WaitDialog.cpp" />
+    <ClCompile Include="XmlConfigFiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Configure.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Configs.h" />
+    <ClInclude Include="Options.h" />
+    <ClInclude Include="InstallerConfig.h" />
+    <ClInclude Include="MagickBaseConfig.h" />
+    <ClInclude Include="Notice.h" />
     <ClInclude Include="Pages\FinishedPage.h" />
     <ClInclude Include="Pages\TargetPage.h" />
     <ClInclude Include="Pages\WelcomePage.h" />
     <ClInclude Include="CommandLineInfo.h" />
+    <ClInclude Include="PerlMagick.h" />
     <ClInclude Include="Project.h" />
-    <ClInclude Include="ProjectFile.h" />
+    <ClInclude Include="Projects.h" />
     <ClInclude Include="Shared.h" />
     <ClInclude Include="Solution.h" />
+    <ClInclude Include="ThresholdMap.h" />
     <ClInclude Include="VersionInfo.h" />
-    <ClInclude Include="WaitDialog.h" />
     <ClInclude Include="ConfigureApp.h" />
     <ClInclude Include="ConfigureWizard.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="WaitDialog.h" />
+    <ClInclude Include="XmlConfigFiles.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Configure.ico" />

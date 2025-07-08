@@ -20,28 +20,26 @@
 #pragma once
 #include "stdafx.h"
 
+#include "Config.h"
 #include "Options.h"
-#include "Project.h"
 
-class Solution
+class Configs
 {
 public:
-  static void write(const Options &options,const vector<Project> &projects);
+  static vector<Config> load(const Options &options);
 
 private:
-  static const wstring solutionFolder(const Project & project);
+  static void addConfig(Config &config,const Options &options,vector<Config> &configs);
 
-  static const wstring solutionName(const Options &options);
+  static void loadCoders(const Options &options,vector<Config> &configs);
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+  static void loadDirectory(const Options &options,const wstring directory,vector<Config> &configs);
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+  static void loadProject(const Options &options,const wstring &name,const wstring &directory,vector<Config> &configs);
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
+  static Config loadProjectConfig(const Options &options,const wstring &name,const wstring &directory);
 
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
+  static void removeInvalidReferences(const Options &options,vector<Config> &configs);
 
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
+  static void validate(const Options &options,const vector<Config> &configs);
 };

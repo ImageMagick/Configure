@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,22 +17,11 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "..\stdafx.h"
-#include "..\resource.h"
 #include "WelcomePage.h"
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif
 
 IMPLEMENT_DYNCREATE(WelcomePage, CPropertyPage)
 
 WelcomePage::WelcomePage() : CPropertyPage(IDD_WELCOME_PAGE)
-{
-}
-
-WelcomePage::~WelcomePage()
 {
 }
 
@@ -41,9 +30,6 @@ void WelcomePage::DoDataExchange(CDataExchange* pDX)
   CPropertyPage::DoDataExchange(pDX);
   DDX_Text(pDX,IDC_WELCOME_TEXT,_welcomeText);
 }
-
-BEGIN_MESSAGE_MAP(WelcomePage, CPropertyPage)
-END_MESSAGE_MAP()
 
 BOOL WelcomePage::OnInitDialog()
 {
@@ -62,7 +48,7 @@ BOOL WelcomePage::OnInitDialog()
 
   UpdateData(FALSE);
 
-  return TRUE;
+  return(TRUE);
 }
 
 BOOL WelcomePage::OnSetActive() 
@@ -70,5 +56,8 @@ BOOL WelcomePage::OnSetActive()
   CPropertySheet* psheet = (CPropertySheet*) GetParent();
   psheet->SetWizardButtons(PSWIZB_NEXT);
 
-  return CPropertyPage::OnSetActive();
+  return(CPropertyPage::OnSetActive());
 }
+
+BEGIN_MESSAGE_MAP(WelcomePage, CPropertyPage)
+END_MESSAGE_MAP()

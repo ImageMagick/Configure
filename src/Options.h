@@ -20,28 +20,49 @@
 #pragma once
 #include "stdafx.h"
 
-#include "Options.h"
-#include "Project.h"
-
-class Solution
+class Options
 {
 public:
-  static void write(const Options &options,const vector<Project> &projects);
+  Options(const wstring &rootDirectory);
+
+  Architecture architecture;
+  BOOL enableDpc;
+  BOOL excludeDeprecated;
+  BOOL includeIncompatibleLicense;
+  BOOL includeOptional;
+  BOOL installedSupport;
+  BOOL isStaticBuild;
+  BOOL linkRuntime;
+  PolicyConfig policyConfig;
+  QuantumDepth quantumDepth;
+  wstring rootDirectory;
+  BOOL useHDRI;
+  BOOL useOpenCL;
+  BOOL useOpenMP;
+  bool isImageMagick7;
+  VisualStudioVersion visualStudioVersion;
+  BOOL zeroConfigurationSupport;
+
+  const wstring architectureName() const;
+
+  const set<wstring>& preBuildLibs() const { return(_preBuildLibs); };
+
+  const wstring channelMaskDepth() const;
+
+  const wstring magickCoreName() const { return(isImageMagick7 ? L"MagickCore" : L"magick"); };
+
+  const wstring platform() const;
+
+  const wstring projectsDirectory() const;
+
+  void checkImageMagickVersion();
 
 private:
-  static const wstring solutionFolder(const Project & project);
+  static wstring getEnvironmentVariable(const wchar_t *name);
 
-  static const wstring solutionName(const Options &options);
+  static VisualStudioVersion getVisualStudioVersion();
+  
+  static bool hasVisualStudioFolder(const wchar_t *name);
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
-
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
-
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
+  set<wstring> _preBuildLibs;
 };

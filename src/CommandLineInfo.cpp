@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,107 +17,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
 #include "CommandLineInfo.h"
 
-CommandLineInfo::CommandLineInfo(const ConfigureWizard &wizard)
+CommandLineInfo::CommandLineInfo(Options &options)
 {
-  _platform=wizard.platform();
-  _enableDpc=wizard.enableDpc();
-  _excludeAliases=wizard.excludeAliases();
-  _excludeDeprecated=wizard.excludeDeprecated();
-  _includeIncompatibleLicense=wizard.includeIncompatibleLicense();
-  _includeOptional=wizard.includeOptional();
-  _installedSupport=wizard.installedSupport();
-  _noWizard=false;
-  _policyConfig=wizard.policyConfig();
-  _quantumDepth=wizard.quantumDepth();
-  _solutionType=wizard.solutionType();
-  _useHDRI=wizard.useHDRI();
-  _useOpenCL=true;
-  _useOpenMP=wizard.useOpenMP();
-  _visualStudioVersion=wizard.visualStudioVersion();
-  _zeroConfigurationSupport=wizard.zeroConfigurationSupport();
-}
-
-bool CommandLineInfo::enableDpc() const
-{
-  return(_enableDpc);
-}
-
-bool CommandLineInfo::excludeAliases() const
-{
-  return(_excludeAliases);
-}
-
-bool CommandLineInfo::excludeDeprecated() const
-{
-  return(_excludeDeprecated);
-}
-
-bool CommandLineInfo::includeIncompatibleLicense() const
-{
-  return(_includeIncompatibleLicense);
-}
-
-bool CommandLineInfo::includeOptional() const
-{
-  return(_includeOptional);
-}
-
-bool CommandLineInfo::installedSupport() const
-{
-  return(_installedSupport);
-}
-
-bool CommandLineInfo::noWizard() const
-{
-  return(_noWizard);
-}
-
-Platform CommandLineInfo::platform() const
-{
-  return(_platform);
-}
-
-PolicyConfig CommandLineInfo::policyConfig() const
-{
-  return(_policyConfig);
-}
-
-QuantumDepth CommandLineInfo::quantumDepth() const
-{
-  return(_quantumDepth);
-}
-
-SolutionType CommandLineInfo::solutionType() const
-{
-  return(_solutionType);
-}
-
-bool CommandLineInfo::useHDRI() const
-{
-  return(_useHDRI);
-}
-
-bool CommandLineInfo::useOpenCL() const
-{
-  return(_useOpenCL);
-}
-
-bool CommandLineInfo::useOpenMP() const
-{
-  return(_useOpenMP);
-}
-
-VisualStudioVersion CommandLineInfo::visualStudioVersion() const
-{
-  return(_visualStudioVersion);
-}
-
-bool CommandLineInfo::zeroConfigurationSupport() const
-{
-  return(_zeroConfigurationSupport);
+  _options=&options;
+  showWizard=true;
 }
 
 void CommandLineInfo::ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast)
@@ -126,61 +31,59 @@ void CommandLineInfo::ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast
     return;
 
   if (_wcsicmp(pszParam, L"arm64") == 0)
-    _platform=Platform::ARM64;
-  else if (_wcsicmp(pszParam, L"dmt") == 0)
-    _solutionType=SolutionType::DYNAMIC_MT;
+    _options->architecture=Architecture::Arm64;
   else if (_wcsicmp(pszParam, L"deprecated") == 0)
-    _excludeDeprecated=FALSE;
-  else if (_wcsicmp(pszParam, L"smt") == 0)
-    _solutionType=SolutionType::STATIC_MT;
-  else if (_wcsicmp(pszParam, L"smtd") == 0)
-    _solutionType=SolutionType::STATIC_MTD;
+    _options->excludeDeprecated=FALSE;
+  else if (_wcsicmp(pszParam, L"dynamic") == 0)
+    _options->isStaticBuild=FALSE;
   else if (_wcsicmp(pszParam, L"hdri") == 0)
-    _useHDRI=true;
+    _options->useHDRI=TRUE;
   else if (_wcsicmp(pszParam, L"incompatibleLicense") == 0)
-     _includeIncompatibleLicense=true;
+     _options->includeIncompatibleLicense=TRUE;
   else if (_wcsicmp(pszParam, L"includeOptional") == 0)
-    _includeOptional=true;
+    _options->includeOptional=TRUE;
   else if (_wcsicmp(pszParam, L"installedSupport") == 0)
-    _installedSupport=true;
-  else if (_wcsicmp(pszParam, L"noAliases") == 0)
-    _excludeAliases=true;
+    _options->installedSupport=TRUE;
   else if (_wcsicmp(pszParam, L"noDpc") == 0)
-    _enableDpc=false;
+    _options->enableDpc=FALSE;
   else if (_wcsicmp(pszParam, L"noHdri") == 0)
-    _useHDRI=false;
+    _options->useHDRI=FALSE;
   else if (_wcsicmp(pszParam, L"noOpenMP") == 0)
-    _useOpenMP=false;
+    _options->useOpenMP=FALSE;
   else if (_wcsicmp(pszParam, L"noWizard") == 0)
-    _noWizard=true;
-  else if (_wcsicmp(pszParam, L"LimitedPolicy") == 0)
-    _policyConfig=PolicyConfig::LIMITED;
+    showWizard=false;
+  else if (_wcsicmp(pszParam, L"limitedPolicy") == 0)
+    _options->policyConfig=PolicyConfig::Limited;
+  else if (_wcsicmp(pszParam, L"linkRuntime") == 0)
+    _options->linkRuntime=TRUE;
   else if (_wcsicmp(pszParam, L"openCL") == 0)
-    _useOpenCL=true;
-  else if (_wcsicmp(pszParam, L"OpenPolicy") == 0)
-    _policyConfig=PolicyConfig::OPEN;
+    _options->useOpenCL=TRUE;
+  else if (_wcsicmp(pszParam, L"openPolicy") == 0)
+    _options->policyConfig=PolicyConfig::Open;
   else if (_wcsicmp(pszParam, L"Q8") == 0)
-    _quantumDepth=QuantumDepth::Q8;
+    _options->quantumDepth=QuantumDepth::Q8;
   else if (_wcsicmp(pszParam, L"Q16") == 0)
-    _quantumDepth=QuantumDepth::Q16;
+    _options->quantumDepth=QuantumDepth::Q16;
   else if (_wcsicmp(pszParam, L"Q32") == 0)
-    _quantumDepth=QuantumDepth::Q32;
+    _options->quantumDepth=QuantumDepth::Q32;
   else if (_wcsicmp(pszParam, L"Q64") == 0)
-    _quantumDepth=QuantumDepth::Q64;
-  else if (_wcsicmp(pszParam, L"SecurePolicy") == 0)
-    _policyConfig=PolicyConfig::SECURE;
+    _options->quantumDepth=QuantumDepth::Q64;
+  else if (_wcsicmp(pszParam, L"securePolicy") == 0)
+    _options->policyConfig=PolicyConfig::Secure;
+  else if (_wcsicmp(pszParam, L"static") == 0)
+    _options->isStaticBuild=TRUE;
   else if (_wcsicmp(pszParam, L"x86") == 0)
-    _platform=Platform::X86;
+    _options->architecture=Architecture::x86;
   else if (_wcsicmp(pszParam, L"x64") == 0)
-    _platform=Platform::X64;
+    _options->architecture=Architecture::x64;
   else if (_wcsicmp(pszParam, L"VS2017") == 0)
-    _visualStudioVersion=VisualStudioVersion::VS2017;
+    _options->visualStudioVersion=VisualStudioVersion::VS2017;
   else if (_wcsicmp(pszParam, L"VS2019") == 0)
-    _visualStudioVersion=VisualStudioVersion::VS2019;
+    _options->visualStudioVersion=VisualStudioVersion::VS2019;
   else if (_wcsicmp(pszParam, L"VS2022") == 0)
-    _visualStudioVersion=VisualStudioVersion::VS2022;
-  else if (_wcsicmp(pszParam, L"WebSafePolicy") == 0)
-    _policyConfig=PolicyConfig::WEBSAFE;
+    _options->visualStudioVersion=VisualStudioVersion::VS2022;
+  else if (_wcsicmp(pszParam, L"webSafePolicy") == 0)
+    _options->policyConfig=PolicyConfig::WebSafe;
   else if (_wcsicmp(pszParam, L"zeroConfigurationSupport") == 0)
-    _zeroConfigurationSupport=true;
+    _options->zeroConfigurationSupport=TRUE;
 }

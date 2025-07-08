@@ -17,31 +17,33 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
 
-#include "Options.h"
-#include "Project.h"
+#include "Notice.h"
 
-class Solution
+void Notice::write(const Options &options,const VersionInfo &versionInfo)
 {
-public:
-  static void write(const Options &options,const vector<Project> &projects);
+  wofstream notice(options.rootDirectory + L"Artifacts\\NOTICE.txt");
+  if (!notice)
+    throwException(L"Unable to open NOTICE.txt");
 
-private:
-  static const wstring solutionFolder(const Project & project);
+  notice << "[ Imagemagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
+  notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
 
-  static const wstring solutionName(const Options &options);
+  wstring licensesDirectory=options.rootDirectory + L"Artifacts\\license\\";
+  for (const auto& entry : filesystem::directory_iterator(licensesDirectory))
+  {
+    if (!entry.is_regular_file())
+      continue;
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+    notice << readLicense(entry.path().wstring()) << endl << endl;
+  }
+}
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+const wstring Notice::readLicense(const wstring &fileName)
+{
+  wifstream file(fileName);
+  if (!file)
+    throwException(L"Unable to open license file: " + fileName);
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
-};
+  return(trim(wstring((istreambuf_iterator<wchar_t>(file)),istreambuf_iterator<wchar_t>())));
+}

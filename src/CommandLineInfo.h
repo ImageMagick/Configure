@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,68 +17,20 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __CommandLineInfo__
-#define __CommandLineInfo__
+#pragma once
+#include "stdafx.h"
 
-#include "ConfigureWizard.h"
-#include "Shared.h"
+#include "Options.h"
 
 class CommandLineInfo : public CCommandLineInfo
 {
 public:
-  CommandLineInfo(const ConfigureWizard &wizard);
+  CommandLineInfo(Options &options);
 
-  bool enableDpc() const;
-
-  bool excludeAliases() const;
-
-  bool excludeDeprecated() const;
-
-  bool includeIncompatibleLicense() const;
-
-  bool includeOptional() const;
-
-  bool installedSupport() const;
-
-  bool noWizard() const;
-
-  Platform platform() const;
-
-  PolicyConfig policyConfig() const;
-
-  QuantumDepth quantumDepth() const;
-
-  SolutionType solutionType() const;
-
-  bool useHDRI() const;
-
-  bool useOpenCL() const;
-
-  bool useOpenMP() const;
-
-  VisualStudioVersion visualStudioVersion() const;
-
-  bool zeroConfigurationSupport() const;
+  bool showWizard;
 
   virtual void ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast);
 
 private:
-  Platform            _platform;
-  bool                _enableDpc;
-  bool                _excludeAliases;
-  bool                _excludeDeprecated;
-  bool                _includeIncompatibleLicense;
-  bool                _includeOptional;
-  bool                _installedSupport;
-  bool                _noWizard;
-  PolicyConfig        _policyConfig;
-  QuantumDepth        _quantumDepth;
-  SolutionType        _solutionType;
-  bool                _useHDRI;
-  bool                _useOpenCL;
-  bool                _useOpenMP;
-  VisualStudioVersion _visualStudioVersion;
-  bool                _zeroConfigurationSupport;
+  Options* _options;
 };
-
-#endif // __CommandLineInfo__

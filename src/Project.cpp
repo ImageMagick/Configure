@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,573 +17,756 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
 #include "Project.h"
 
-Compiler Project::compiler() const
+Project::Project(const Config &config,const Options &options)
+  : _config(config),
+    _options(options)
+{  
+}
+
+const wstring Project::characterSet() const
 {
-  return(_magickProject && _wizard.visualStudioVersion() >= VisualStudioVersion::VS2022
+  return(_config.useUnicode() ? L"Unicode" : L"MultiByte");
+}
+
+const Compiler Project::compiler() const
+{
+  return(_config.isMagickProject() && _options.visualStudioVersion >= VisualStudioVersion::VS2022
     ? Compiler::CPP
     : Compiler::Default);
 }
 
-const wstring Project::configDefine() const
+const wstring Project::configurationType() const
 {
-  return(_configDefine);
+  if (isApplication())
+    return(L"Application");
+
+  if (_options.isStaticBuild || _config.type() == ProjectType::StaticLibrary)
+    return(L"StaticLibrary");
+
+  return(L"DynamicLibrary");
 }
 
-const vector<wstring> &Project::defines()
+const wstring Project::defines() const
 {
-  return(_defines);
-}
-
-const vector<wstring> &Project::definesDll()
-{
-  return(_definesDll);
-}
-
-const vector<wstring> &Project::definesLib()
-{
-  return(_definesLib);
-}
-
-const vector<wstring> &Project::dependencies()
-{
-  return(_dependencies);
-}
-
-const vector<wstring> &Project::directories()
-{
-  return(_directories);
-}
-
-const vector<wstring> &Project::excludes()
-{
-  return(_excludes);
-}
-
-const vector<ProjectFile*> &Project::files() const
-{
-  return(_files);
-}
-
-const vector<wstring> &Project::includes()
-{
-  return(_includes);
-}
-
-const vector<wstring> &Project::includesNasm()
-{
-  return(_includesNasm);
-}
-
-const vector<wstring> &Project::platformExcludes(Platform platform)
-{
-  switch (platform)
+  wstring defines=L"_WIN32_WINNT=0x0601";
+  if (_options.isStaticBuild || _config.type() == ProjectType::StaticLibrary)
   {
-    case Platform::X86: return(_excludesX86);
-    case Platform::X64: return(_excludesX64);
-    case Platform::ARM64: return(_excludesARM64);
-    default: throw;
+    defines+=L";_LIB";
+    for (auto& define : _config.staticDefines())
+      defines+=L";" + define;
   }
-}
-
-const wstring Project::configPath(const wstring &subPath) const
-{
-  return(_configFolder + L"\\" + subPath);
-}
-
-const wstring Project::filePath(const wstring &subPath) const
-{
-  wstring
-    path = _filesFolder + L"\\";
-
-  path += _path != L"" ? _path : _name;
-
-  if (subPath == L".")
-    return(path);
-
-  if (subPath == L"..")
-    return( _filesFolder + L"\\");
-
-  return(path + L"\\" + subPath);
-}
-
-bool Project::isConsole() const
-{
-  if (!isExe())
-    return(false);
-  return(_type != ProjectType::APPTYPE);
-}
-
-bool Project::isDll() const
-{
-  return((_type == ProjectType::DLLTYPE) || (_type == ProjectType::DLLMODULETYPE));
-}
-
-bool Project::isExe() const
-{
-  return((_type == ProjectType::EXETYPE) || (_type == ProjectType::EXEMODULETYPE) || (_type == ProjectType::APPTYPE));
-}
-
-bool Project::isFuzz() const
-{
-  return(_modulePrefix == L"FUZZ");
-}
-
-bool Project::isLib() const
-{
-  return((_type == ProjectType::STATICTYPE));
-}
-
-bool Project::isModule() const
-{
-  return((_type == ProjectType::DLLMODULETYPE) || (_type == ProjectType::EXEMODULETYPE));
-}
-
-bool Project::isOptimizationDisable() const
-{
-  return(_disableOptimization);
-}
-
-bool Project::isSupported(const VisualStudioVersion visualStudioVersion) const
-{
-  return(visualStudioVersion >= _minimumVisualStudioVersion);
-}
-
-const vector<wstring> &Project::libraries()
-{
-  return(_libraries);
-}
-
-const wstring Project::moduleDefinitionFile() const
-{
-  return(_moduleDefinitionFile);
-}
-
-const wstring Project::name() const
-{
-  return(_name);
-}
-
-const wstring Project::notice() const
-{
-  return(_notice);
-}
-
-const vector<wstring> &Project::references()
-{
-  return(_references);
-}
-
-bool Project::treatWarningAsError() const
-{
-  return(_magickProject && _wizard.isImageMagick7());
-}
-
-bool Project::useNasm() const
-{
-  return(_useNasm);
-};
-
-bool Project::useOpenCL() const
-{
-  return(_useOpenCL);
-}
-
-bool Project::useUnicode() const
-{
-  return(_useUnicode);
-}
-
-const wstring Project::version() const
-{
-  return _versions[0];
-}
-
-int Project::warningLevel() const
-{
-  return(_magickProject && _wizard.isImageMagick7() ? 4 : 0);
-}
-
-void Project::checkFiles(const VisualStudioVersion visualStudioVersion)
-{
-   std::vector<ProjectFile*>
-     newFiles(_files.size());
-
-  auto filter=[visualStudioVersion](ProjectFile* p){ return p->isSupported(visualStudioVersion); };
-  auto it=std::copy_if(_files.begin(),_files.end(),newFiles.begin(),filter);
-  newFiles.resize(std::distance(newFiles.begin(),it));
-  _files=newFiles;
-}
-
-void Project::mergeProjectFiles()
-{
-  ProjectFile
-    *projectFile;
-
-  if ((_type != ProjectType::DLLMODULETYPE) || (_wizard.solutionType() == SolutionType::DYNAMIC_MT))
-    return;
-
-  projectFile=new ProjectFile(&_wizard,this,L"CORE",_name);
-  for (auto& file : _files)
+  else
   {
-    projectFile->merge(file);
-  }
-  _files.clear();
-  _files.push_back(projectFile);
-}
-
-Project* Project::create(const ConfigureWizard &wizard,const wstring &configFolder, const wstring &filesFolder, const wstring &name)
-{
-  wifstream
-    config;
-
-  wstring
-    configPath;
-
-  configPath=configFolder + L"\\" + name + L"\\.ImageMagick";
-  config.open(pathFromRoot(configPath + L"\\Config.txt"));
-  if (!config)
-  {
-    configPath=configFolder + L"\\" + name;
-    config.open(pathFromRoot(configPath +L"\\Config.txt"));
+    for (auto& define : _config.dynamicDefines())
+      defines+=L";" + define;
   }
 
-  if (!config)
-    return((Project *) NULL);
-
-  Project* project = new Project(wizard,configPath,filesFolder,name);
-  project->loadConfig(config);
-  config.close();
-
-  if (project->_onlyImageMagick7 && !wizard.isImageMagick7())
-    return((Project *) NULL);
-
-  project->setNoticeAndVersion();
-
-  return(project);
+  return(defines);
 }
 
-bool Project::loadFiles()
+const bool Project::hasAsmfiles() const
 {
-  ProjectFile
-    *projectFile;
-
-  _files.clear();
-
-  if (shouldSkip())
-    return(false);
-
-  switch(_type)
+  for (const auto& file : _files)
   {
-    case ProjectType::DLLMODULETYPE:
-    {
-      loadModules();
-      break;
-    }
-    case ProjectType::DLLTYPE:
-    {
-      projectFile=new ProjectFile(&_wizard,this,L"CORE",_name);
-      _files.push_back(projectFile);
-      break;
-    }
-    case ProjectType::APPTYPE:
-    case ProjectType::EXETYPE:
-    {
-      projectFile=new ProjectFile(&_wizard,this,L"UTIL",_name);
-      _files.push_back(projectFile);
-      break;
-    }
-    case ProjectType::EXEMODULETYPE:
-    {
-      loadModules();
-      break;
-    }
-    case ProjectType::STATICTYPE:
-    {
-      projectFile=new ProjectFile(&_wizard,this,L"CORE",_name);
-      _files.push_back(projectFile);
-      break;
-    }
+    if (endsWith(file, L".asm"))
+      return(true);
   }
-
-  return(true);
-}
-
-bool Project::shouldSkip() const
-{
-  if (_disabledARM64 && _wizard.platform() == Platform::ARM64)
-    return(true);
-
-  if (_hasIncompatibleLicense && !_wizard.includeIncompatibleLicense())
-    return(true);
-
-  if (_isOptional && !_wizard.includeOptional())
-    return(true);
 
   return(false);
 }
 
-void Project::updateProjectNames()
+const wstring Project::includeDirectories() const
 {
-  _wizard.updateProjectNames(_name);
+  wstring directories;
 
-  updateProjectNames(_dependencies);
-  updateProjectNames(_directories);
-  updateProjectNames(_includes);
-  updateProjectNames(_references);
-}
+  if (_config.includes().empty())
+    directories=L"$(SolutionDir)" + _config.directory() + L";";
 
-void Project::updateProjectNames(vector<wstring> &vector)
-{
-  for (auto& value : vector)
-    _wizard.updateProjectNames(value);
-}
-
-Project::Project(const ConfigureWizard &wizard,const wstring &configFolder,const wstring &filesFolder,const wstring &name)
-  : _wizard(wizard)
-{
-  _configFolder=configFolder;
-  _filesFolder=filesFolder;
-  _name=name;
-
-  _disabledARM64=false;
-  _disableOptimization=false;
-  _hasIncompatibleLicense=false;
-  _isOptional=false;
-  _magickProject=false;
-  _minimumVisualStudioVersion=VSEARLIEST;
-  _onlyImageMagick7=false;
-  _type=ProjectType::UNDEFINEDTYPE;
-  _useNasm=false;
-  _useOpenCL=false;
-  _useUnicode=false;
-}
-
-void Project::addLines(wifstream &config,wstring &value)
-{
-  wstring
-    line;
-
-  while (!config.eof())
+  for (const auto& include : _config.includes())
   {
-    getline(config,line);
-    if (trim(line).empty())
-      return;
+    wstring includeDirectory=include;
+    if (include[0] == L'\\')
+      includeDirectory=include.substr(1);
+    else
+      includeDirectory=_config.directory() + include;
 
-    value+=line+L"\n";
+    directories+=L"$(SolutionDir)" + includeDirectory + L";";
+  }
+
+  for (const auto& reference : _config.references())
+    directories+=L"$(SolutionDir)Artifacts\\include\\" + reference + L";";
+
+  if (_options.useOpenCL && _config.useOpenCL())
+    directories+=L"$(SolutionDir)Build\\OpenCL";
+
+  return(directories);
+}
+
+const bool Project::isApplication() const
+{
+  switch(_config.type())
+  {
+    case ProjectType::Application:
+    case ProjectType::Demo:
+    case ProjectType::Fuzz:
+      return(true);
+    default:
+      return(false);
   }
 }
 
-void Project::addLines(wifstream &config,vector<wstring> &container)
+const wstring Project::nasmOptions() const
 {
   wstring
-    line;
+    options=L"";
 
-  while (!config.eof())
+  if (_options.architecture == Architecture::Arm64)
+    throwException(L"NASM is not supported for Arm64 architecture");
+
+  if (_options.architecture == Architecture::x64)
+    options+=L" -fwin64 -DWIN64 -D__x86_64__";
+  else
+    options+=L" -fwin32 -DWIN32";
+
+  for (const auto& include : _config.nasmIncludes(_options.architecture))
+    options+=L" -i\"$(SolutionDir)" + _config.directory() + include + L"\"";
+
+  options+=L" -o \"$(IntDir)%(Filename).obj\" \"%(FullPath)\"";
+  return(options);
+}
+
+const wstring Project::openMPSupport() const
+{
+  return(_options.useOpenMP ? L"true" : L"false");
+}
+
+const wstring Project::outputDirectory() const
+{
+  switch(_config.type())
   {
-    line=readLine(config);
-    if (line.empty())
-      return;
-
-    container.push_back(line);
+    case ProjectType::Application: return(L"bin");
+    case ProjectType::Coder:
+    case ProjectType::DynamicLibrary:
+    case ProjectType::Filter:
+      return(_options.isStaticBuild ? L"lib" : L"bin");
+    case ProjectType::Demo: return(L"demo");
+    case ProjectType::Fuzz: return(L"fuzz");
+    case ProjectType::StaticLibrary: return(L"lib");
+    default: throwException(L"Unsupported project type");
   }
 }
 
-void Project::loadConfig(wifstream &config)
+const wstring Project::platformToolset() const
 {
-  wstring
-    line;
-
-  while (!config.eof())
+  switch (_options.visualStudioVersion)
   {
-    line=readLine(config);
-    if (line == L"[APP]")
-      _type=ProjectType::APPTYPE;
-    else if (line == L"[CONFIG_DEFINE]")
-      addLines(config,_configDefine);
-    else if (line == L"[DEFINES_DLL]")
-      addLines(config,_definesDll);
-    else if (line == L"[DEFINES_LIB]")
-      addLines(config,_definesLib);
-    else if (line == L"[DEFINES]")
-      addLines(config,_defines);
-    else if (line == L"[DEPENDENCIES]")
-      addLines(config,_dependencies);
-    else if (line == L"[DIRECTORIES]")
-      addLines(config,_directories);
-    else if (line == L"[DISABLED_ARM64]")
-      _disabledARM64=true;
-    else if (line == L"[DISABLE_OPTIMIZATION]")
-      _disableOptimization=true;
-    else if (line == L"[DLL]")
-      _type=ProjectType::DLLTYPE;
-    else if (line == L"[DLLMODULE]")
-      _type=ProjectType::DLLMODULETYPE;
-    else if (line == L"[EXE]")
-      _type=ProjectType::EXETYPE;
-    else if (line == L"[EXEMODULE]")
-      _type=ProjectType::EXEMODULETYPE;
-    else if (line == L"[EXCLUDES]")
-      addLines(config,_excludes);
-    else if (line == L"[EXCLUDES_X86]")
-      addLines(config,_excludesX86);
-    else if (line == L"[EXCLUDES_X64]")
-      addLines(config,_excludesX64);
-    else if (line == L"[EXCLUDES_ARM64]")
-      addLines(config,_excludesARM64);
-    else if (line == L"[INCLUDES]")
-      addLines(config,_includes);
-    else if (line == L"[INCLUDES_NASM]")
-      addLines(config,_includesNasm);
-    else if (line == L"[INCOMPATIBLE_LICENSE]")
-      _hasIncompatibleLicense=true;
-    else if (line == L"[STATIC]")
-      _type=ProjectType::STATICTYPE;
-    else if (line == L"[LIBRARIES]")
-      addLines(config,_libraries);
-    else if (line == L"[MODULE_DEFINITION_FILE]")
-      _moduleDefinitionFile=readLine(config);
-    else if (line == L"[MODULE_PREFIX]")
-      _modulePrefix=readLine(config);
-    else if (line == L"[NASM]")
-      _useNasm=true;
-    else if (line == L"[ONLY_IMAGEMAGICK7]")
-      _onlyImageMagick7=true;
-    else if (line == L"[OPTIONAL]")
-      _isOptional=true;
-    else if (line == L"[PATH]")
-      _path=readLine(config);
-    else if (line == L"[REFERENCES]")
-      addLines(config,_references);
-    else if (line == L"[UNICODE]")
-      _useUnicode=true;
-    else if (line == L"[OPENCL]")
-      _useOpenCL=true;
-    else if (line == L"[VISUAL_STUDIO]")
-      _minimumVisualStudioVersion=parseVisualStudioVersion(readLine(config));
-    else if (line == L"[MAGICK_PROJECT]")
-      _magickProject=true;
-    else if (line == L"[LICENSE]")
-      _licenseFileNames=readLicenseFilenames(readLine(config));
+    case VisualStudioVersion::VS2022: return(L"v143");
+    case VisualStudioVersion::VS2019: return(L"v142");
+    case VisualStudioVersion::VS2017: return(L"v141");
+    default: throwException(L"Unknown architecture");
   }
 }
 
-void Project::loadModules()
+const wstring Project::prefix() const
 {
-  ProjectFile
-    *projectAlias,
-    *projectFile;
-
-  for (auto& dir :_directories)
+  switch(_config.type())
   {
-    const wstring
-      path(pathFromRoot(filePath(dir)));
+  case ProjectType::Application: return(L"APP");
+  case ProjectType::Coder:
+      return(_options.isStaticBuild ? L"CORE" : L"IM_MOD");
+  case ProjectType::DynamicLibrary: return(L"CORE");
+  case ProjectType::Demo: return(L"DEMO");
+  case ProjectType::Filter:
+      return(_options.isStaticBuild ? L"CORE" :L"FILTER");
+  case ProjectType::Fuzz: return(L"FUZZ");
+  case ProjectType::StaticLibrary: return(L"CORE");
+  default: throwException(L"Unsupported project type");
+  }
+}
 
-    if (!directoryExists(path))
-      throwException(L"Invalid folder specified: " + path);
-    
-    for (const auto& entry : filesystem::directory_iterator(path))
+const wstring Project::warningLevel() const
+{
+  if (_options.isImageMagick7 && _config.isMagickProject())
+    return(L"Level4");
+  else
+    return(L"TurnOffAllWarnings");
+}
+
+const wstring Project::additionalDependencies(const bool debug) const
+{
+  wstring dependencies;
+
+  for (auto& reference : _config.references())
+    dependencies+=(debug ? L"CORE_DB_" : L"CORE_RL_") + reference + L"_.lib;";
+
+  if (!_options.isStaticBuild)
+  {
+    for (auto& reference : _config.coderReferences())
+      dependencies+=(debug ? L"IM_MOD_DB_" : L"IM_MOD_RL_") + reference + L"_.lib;";
+  }
+
+  return(dependencies);
+}
+
+void Project::copyConfigInfo(const Config& config)
+{
+  _config=_config.copyInfo(config);
+}
+
+Project Project::create(const Config &config,const Options &options)
+{
+  Project project(config,options);
+  project.loadFiles();
+
+  return(project);
+}
+
+bool Project::isExcluded(const wstring fileName,set<wstring> &excludes,multiset<wstring> &foundExcludes) const
+{
+  if (startsWith(fileName,L".git\\") || startsWith(fileName,L".github\\") || startsWith(fileName,L".ImageMagick\\"))
+    return(true);
+
+  if (endsWith(fileName,L".h"))
+  {
+    size_t lastDot=fileName.find_last_of(L'.');
+
+    if (isExcluded(fileName.substr(0,lastDot) + L".c",excludes,foundExcludes))
+      return(true);
+
+    if (isExcluded(fileName.substr(0,lastDot) + L".cc",excludes,foundExcludes))
+      return(true);
+
+    if (isExcluded(fileName.substr(0,lastDot) + L".cpp",excludes,foundExcludes))
+      return(true);
+
+    return(false);
+  }
+
+  for (const auto& exclude : excludes)
+  {
+    if (startsWith(fileName,exclude))
     {
-      wstring
-        fileName,
-        name;
+      foundExcludes.insert(exclude);
+      return(true);
+    }
+  }
 
-      if (!entry.is_regular_file())
-        continue;
+  return(false);
+}
 
-      fileName=entry.path().filename();
-      if (contains(_excludes,fileName) || startsWith(fileName,L"main.") || !isValidSrcFile(fileName))
-        continue;
+void Project::loadFiles()
+{
+  multiset<wstring> foundExcludes;
+  set<wstring> excludes(_config.excludes(_options.architecture));
 
-      name=fileName;
-      name=name.substr(0,name.find_last_of(L"."));
-      projectFile=new ProjectFile(&_wizard,this,_modulePrefix,name);
-      _files.push_back(projectFile);
+  loadFiles(L"",excludes,foundExcludes);
 
-      for (auto& alias : projectFile->aliases())
+  for (const auto& exclude : excludes)
+  {
+    if (foundExcludes.find(exclude) == foundExcludes.end())
+      throwException(L"Invalid exclude path " + exclude + L" in " + name());
+  }
+}
+
+void Project::loadFiles(const wstring directory,set<wstring> &excludes,multiset<wstring> &foundExcludes)
+{
+  if (isExcluded(directory + L"\\",excludes,foundExcludes))
+    return;
+
+  for (const auto& file : filesystem::directory_iterator(_options.rootDirectory + _config.directory() + directory))
+  {
+    wstring name=directory;
+    if (!directory.empty())
+      name+=L"\\";
+    name+=file.path().filename().wstring();
+
+    if (file.is_directory())
+    {
+      loadFiles(name,excludes,foundExcludes);
+      continue;
+    }
+  
+    static const set<wstring>
+      validExtensions = { L".asm", L".c", L".cc", L".cpp", L".h" };
+
+    if (validExtensions.find(file.path().extension().wstring()) == validExtensions.end())
+      continue;
+
+    if (!isExcluded(name,excludes,foundExcludes))
+      _files.insert(name);
+  }
+}
+
+void Project::rename(const wstring& name)
+{
+  _config.rename(name);
+}
+
+const wstring Project::runtimeLibrary(bool debug) const
+{
+  wstring prefix=debug ? L"MultiThreadedDebug" : L"MultiThreaded";
+  return(prefix + (_options.linkRuntime ? L"" : L"DLL"));
+}
+
+void Project::setFiles(const vector<wstring> files)
+{
+  _files.clear();
+
+  for (const auto& file : files)
+    _files.insert(file);
+}
+
+vector<Project> Project::splitToFiles(const vector<wstring> additionalFiles) const
+{
+  vector<Project> projects;
+  for (const auto& file : _files)
+  {
+    if (!endsWith(file,L".c") && !endsWith(file,L".cc") && !endsWith(file,L".cpp"))
+      continue;
+
+    Config config(_config);
+    config.rename(file.substr(0,file.find_last_of(L".")));
+
+    Project project=create(config,_options);
+    project._files.clear();
+    project._files.insert(file);
+
+    const wstring headerFile = file.substr(0,file.find_last_of(L".")) + L".h";
+    if (filesystem::exists(_options.rootDirectory + _config.directory() + headerFile))
+      project._files.insert(headerFile);
+
+    for (const auto& additionalFile : additionalFiles)
+    {
+      project._files.insert(additionalFile);
+    }
+
+    projects.push_back(project);
+  }
+  return(projects);
+}
+
+const wstring Project::targetName(bool debug) const
+{
+  if (_config.type() == ProjectType::Application)
+    return(name());
+
+  return(prefix() + L"_" + (debug ? L"DB_" : L"RL_") + name() + L"_");
+}
+
+void Project::write(const vector<Project> &allProjects) const
+{
+  const wstring vcxprojFileName=_options.rootDirectory + fileName();
+  filesystem::create_directories(filesystem::path(vcxprojFileName).parent_path());
+
+  wofstream file(vcxprojFileName);
+  if (!file)
+    throwException(L"Failed to open file: " + vcxprojFileName);
+
+  const bool includeMasm=hasAsmfiles() && !_config.useNasm() && _options.architecture != Architecture::Arm64;
+
+  file << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
+  file << "<Project DefaultTargets=\"Build\" ToolsVersion=\"4.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">" << endl;
+  writeConfiguration(file);
+  writeProperties(file);
+  writeOutputProperties(file);
+  writeCompilationConfiguration(file);
+  writePropsImports(file,includeMasm);
+  if ((_config.type() == ProjectType::StaticLibrary) ||
+      (_options.isStaticBuild && (_config.type() == ProjectType::DynamicLibrary || _config.type() == ProjectType::Coder)))
+    writeLibProperties(file);
+  else
+    writeLinkProperties(file);
+  writeFiles(file);
+  writeReferences(file,allProjects);
+  writeTargetsImports(file,includeMasm);
+  writeCopyIncludes(file);
+  file << "</Project>" << endl;
+}
+void Project::writeCompilationConfiguration(wofstream &file) const
+{
+  file << "  <ItemDefinitionGroup>" << endl;
+  file << "    <ClCompile>" << endl;
+  file << "      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>" << endl;
+  file << "      <AdditionalIncludeDirectories>" << includeDirectories() << "%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>" << endl;
+  file << "      <FunctionLevelLinking>true</FunctionLevelLinking>" << endl;
+  file << "      <LanguageStandard>stdcpp17</LanguageStandard>" << endl;
+  file << "      <LanguageStandard_C>stdc17</LanguageStandard_C>" << endl;
+  file << "      <MultiProcessorCompilation>true</MultiProcessorCompilation>" << endl;
+  file << "      <StringPooling>true</StringPooling>" << endl;
+  file << "      <SuppressStartupBanner>true</SuppressStartupBanner>" << endl;
+  file << "      <OpenMPSupport>" << openMPSupport() << "</OpenMPSupport>" << endl;
+  file << "      <WarningLevel>" << warningLevel() << "</WarningLevel>" << endl;
+  file << "      <DebugInformationFormat Condition=\"'$(Configuration)'=='Debug'\">ProgramDatabase</DebugInformationFormat>" << endl;
+  file << "      <DebugInformationFormat Condition=\"'$(Configuration)'=='Release'\">None</DebugInformationFormat>" << endl;
+  file << "      <BasicRuntimeChecks Condition=\"'$(Configuration)'=='Debug'\">EnableFastChecks</BasicRuntimeChecks>" << endl;
+  file << "      <BasicRuntimeChecks Condition=\"'$(Configuration)'=='Release'\">Default</BasicRuntimeChecks>" << endl;
+  file << "      <InlineFunctionExpansion Condition=\"'$(Configuration)'=='Debug'\">Disabled</InlineFunctionExpansion>" << endl;
+  file << "      <InlineFunctionExpansion Condition=\"'$(Configuration)'=='Release'\">AnySuitable</InlineFunctionExpansion>" << endl;
+  file << "      <OmitFramePointers Condition=\"'$(Configuration)'=='Debug'\">false</OmitFramePointers>" << endl;
+  file << "      <OmitFramePointers Condition=\"'$(Configuration)'=='Release'\">true</OmitFramePointers>" << endl;
+  file << "      <Optimization Condition=\"'$(Configuration)'=='Debug'\">Disabled</Optimization>" << endl;
+  file << "      <Optimization Condition=\"'$(Configuration)'=='Release'\">MaxSpeed</Optimization>" << endl;
+  file << "      <PreprocessorDefinitions>" << defines() << ";%(PreprocessorDefinitions)</PreprocessorDefinitions>" << endl;
+  file << "      <PreprocessorDefinitions Condition=\"'$(Configuration)'=='Debug'\">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>" << endl;
+  file << "      <PreprocessorDefinitions Condition=\"'$(Configuration)'=='Release'\">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>" << endl;
+  file << "      <RuntimeLibrary Condition=\"'$(Configuration)'=='Debug'\">" << runtimeLibrary(true) << "</RuntimeLibrary>" << endl;
+  file << "      <RuntimeLibrary Condition=\"'$(Configuration)'=='Release'\">" << runtimeLibrary(false) << "</RuntimeLibrary>" << endl;
+  if (compiler() == Compiler::CPP)
+    file << "      <CompileAs>CompileAsCpp</CompileAs>" << endl;
+  if (_config.isMagickProject() && _options.isImageMagick7)
+    file << "      <TreatWarningAsError>true</TreatWarningAsError>" << endl;
+  file << "    </ClCompile>" << endl;
+  file << "  </ItemDefinitionGroup>" << endl;
+}
+
+void Project::writeConfiguration(wofstream &file) const
+{
+  file << "  <ItemGroup Label=\"ProjectConfigurations\">" << endl;
+  file << "    <ProjectConfiguration Include=\"Debug|" << _options.platform() << "\">" << endl;
+  file << "      <Configuration>Debug</Configuration>" << endl;
+  file << "      <Platform>" << _options.platform() << "</Platform>" << endl;
+  file << "    </ProjectConfiguration>" << endl;
+  file << "    <ProjectConfiguration Include=\"Release|" << _options.platform() << "\">" << endl;
+  file << "      <Configuration>Release</Configuration>" << endl;
+  file << "      <Platform>" << _options.platform() << "</Platform>" << endl;
+  file << "    </ProjectConfiguration>" << endl;
+  file << "  </ItemGroup>" << endl;
+}
+
+void Project::writeCopyIncludes(wofstream &file) const
+{
+  if (_config.includeArtifacts().empty())
+    return;
+
+  file << "  <Target Name=\"CopyIncludes\" AfterTargets=\"Build\">" << endl;
+  file << "    <RemoveDir Directories=\"$(SolutionDir)Artifacts\\include\\" << name() << "\" Condition=\"Exists('$(SolutionDir)Artifacts\\include\\" << name() << "')\" />" << endl;
+  file << "    <ItemGroup>" << endl;
+  size_t index=0;
+  for (const auto& include : _config.includeArtifacts())
+  {
+    if (endsWith(include.first,L".h"))
+      file << "      <HeaderFiles" << index++ << " Include=\"$(SolutionDir)" << include.first << "\" />" << endl;
+    else
+      file << "      <HeaderFiles" << index++ << " Include=\"$(SolutionDir)" << include.first << "\\*.h\" />" << endl;
+  }
+  file << "    </ItemGroup>" << endl;
+   index=0;
+  for (const auto& include : _config.includeArtifacts())
+  {
+    file << "    <Error Condition=\"'@(HeaderFiles" << index << ")' == ''\" Text=\"No header files found in: " << include.first << "\" />" << endl;
+    file << "    <Copy SourceFiles=\"@(HeaderFiles" << index++ << ")\" DestinationFolder=\"$(SolutionDir)Artifacts\\include\\" << name() << "\\" << include.second << "\" SkipUnchangedFiles=\"true\" />" << endl;
+  }
+  file << "  </Target>" << endl;
+}
+
+void Project::writeFiles(wofstream &file) const
+{
+  unordered_map<wstring, int> fileNameCount;
+  file << "  <ItemGroup>" << endl;
+  for (auto& fileName : _files)
+  {
+    wstring objectName=fileName.substr(fileName.find_last_of(L"\\") + 1);
+
+    if (endsWith(fileName,L".h"))
+      file << "    <ClInclude Include=\"$(SolutionDir)" << _config.directory() << fileName << "\" />" << endl;
+    else if (endsWith(fileName,L".asm"))
+    {
+      if (_config.useNasm())
       {
-        projectAlias=new ProjectFile(&_wizard,this,_modulePrefix,alias,name);
-        _files.push_back(projectAlias);
+        file << "    <CustomBuild Include=\"$(SolutionDir)" << _config.directory() << fileName << "\">" << endl;
+        file << "      <Command>$(SolutionDir)Build\\nasm" << nasmOptions() << "</Command>" << endl;
+        if (fileNameCount[objectName]++ == 0)
+          file << "      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>" << endl;
+        else
+          file << "      <Outputs>$(IntDir)%(Filename)." << fileNameCount[objectName] << ".obj;%(Outputs)</Outputs>" << endl;
+        file << "    </CustomBuild>" << endl;
+      }
+      else if (_options.architecture == Architecture::Arm64)
+      {
+        file << "    <CustomBuild Include=\"$(SolutionDir)" << _config.directory() << fileName << "\">" << endl;
+        file << "      <Command>armasm64 \"%(FullPath)\" -o \"$(IntDir)%(Filename).obj\"</Command>" << endl;
+        if (fileNameCount[objectName]++ == 0)
+          file << "      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>" << endl;
+        else
+          file << "      <Outputs>$(IntDir)%(Filename)." << fileNameCount[objectName] << ".obj;%(Outputs)</Outputs>" << endl;
+        file << "    </CustomBuild>" << endl;
+      }
+      else
+      {
+        file << "    <MASM Include=\"$(SolutionDir)" << _config.directory() << fileName << "\">" << endl;
+        file << "      <FileType>Document</FileType>" << endl;
+        if (_options.architecture == Architecture::x86)
+          file << "      <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>" << endl;
+        file << "    </MASM>" << endl;
+      }
+    }
+    else
+    {
+      if (fileNameCount[objectName]++ == 0)
+        file << "    <ClCompile Include=\"$(SolutionDir)" << _config.directory() << fileName << "\" />" << endl;
+      else
+      {
+        file << "    <ClCompile Include=\"$(SolutionDir)" << _config.directory() << fileName << "\">" << endl;
+        file << "      <ObjectFileName>$(IntDir)" << objectName << L"." << fileNameCount[objectName] << ".obj</ObjectFileName>" << endl;
+        file << "    </ClCompile>" << endl;
       }
     }
   }
+
+  if (!_config.resourceFileName().empty())
+    file << "    <ResourceCompile Include=\"$(SolutionDir)" << _config.resourceFileName().substr(_options.rootDirectory.length()) << "\" />" << endl;
+
+  file << "  </ItemGroup>" << endl;
 }
 
-const vector<wstring> Project::readLicenseFilenames(const wstring &line) const
+void Project::writeFilters() const
 {
-  wstring
-    fileName;
+  wstring filterFileName=_options.rootDirectory + fileName() + L".filters";
+  wofstream file(filterFileName);
+  if (!file)
+    throwException(L"Failed to open file: " + filterFileName);
+  
+  set<wstring> directories;
+  file << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
+  file << "<Project ToolsVersion=\"4.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">" << endl;
+  file << "  <ItemGroup>" << endl;
 
-  vector<wstring>
-    fileNames;
-
-  wstringstream
-    wss(line);
-
-  while(getline(wss, fileName, L';'))
+  for (const auto& fileName : _files)
   {
-    wstring
-      filePath(pathFromRoot(filePath(fileName)));
+    size_t slashIndex=fileName.find_last_of(L"\\");
+    if (slashIndex == wstring::npos)
+      continue;
 
-    filesystem::path
-      file(filePath);
+    wstring directory=fileName.substr(0,slashIndex);
+    directories.insert(directory);
+    wstring parentDirectory=directory;
+    while (slashIndex != wstring::npos)
+    {
+      parentDirectory=parentDirectory.substr(0,slashIndex);
+      directories.insert(parentDirectory);
+      slashIndex=parentDirectory.find_last_of(L"\\");
+    }
 
-    if (!filesystem::exists(file))
-      throwException(L"Unable to open license file: " + fileName);
+    wstring tag=L"ClCompile";
 
-    fileNames.push_back(filePath);
+    if (endsWith(fileName, L".h"))
+    {
+      tag = L"ClInclude";
+    }
+    else if (endsWith(fileName, L".asm"))
+    {
+      if (_config.useNasm())
+        tag = L"CustomBuild";
+      else
+        tag = L"MASM";
+    }
+    
+    file << "    <" << tag << " Include=\"$(SolutionDir)" << _config.directory() << fileName << "\">" << endl;
+    file << "      <Filter>" << directory << "</Filter>" << endl;
+    file << "    </" << tag << ">" << endl;
   }
 
-  return (fileNames);
+  for (const auto& directory : directories)
+  {
+    file << "    <Filter Include=\"" << directory << "\">" << endl;
+    file << "      <UniqueIdentifier>{" << createGuid(directory) << "}</UniqueIdentifier>" << endl;
+    file << "    </Filter>" << endl;
+  }
+
+  file << "  </ItemGroup>" << endl;
+  file << "</Project>" << endl;
 }
 
-void Project::setNoticeAndVersion()
+void Project::writeLibProperties(wofstream& file) const
 {
-  _notice=L"";
-  for (auto& licenseFileName : _licenseFileNames)
+  file << "  <ItemDefinitionGroup>" << endl;
+  file << "    <Lib>" << endl;
+  file << "      <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>" << endl;
+  file << "    </Lib>" << endl;
+  file << "  </ItemDefinitionGroup>" << endl;
+}
+
+void Project::writeLicense() const
+{
+  if (_config.licenses().empty())
+    return;
+
+  wstring targetDirectory=_options.rootDirectory + L"Artifacts\\license\\";
+  filesystem::create_directories(targetDirectory);
+
+  wofstream licenseFile(targetDirectory + name() + L".txt");
+  for (const auto& license : _config.licenses())
   {
-    filesystem::path
-      folder,
-      versionFile;
+    wstring sourceFileName=_options.rootDirectory + _config.directory() + license;
+    wifstream sourceLicenseFile(sourceFileName);
+    if (!sourceLicenseFile)
+      throwException(L"Failed to open license file: " + sourceFileName);
 
-    wifstream
-      version;
+    wstring versionFileName=_options.rootDirectory + _config.directory() + L".ImageMagick\\ImageMagick.version.h";
+    wstring projectName=name();
+    if (!filesystem::exists(versionFileName))
+    {
+      wstring configFolder=sourceFileName.substr(0,sourceFileName.find_last_of(L"\\"));
+      versionFileName=configFolder + L"\\.ImageMagick\\ImageMagick.version.h";
+      projectName=configFolder.substr(configFolder.find_last_of(L"\\") + 1);
+    }
 
-    wstring
-      versionFileName;
-
-    folder=filesystem::path(licenseFileName).parent_path();
-    versionFileName=folder.wstring()+L"\\.ImageMagick\\ImageMagick.version.h";
-    versionFile=filesystem::path(versionFileName).wstring();
-    if (!filesystem::exists(versionFile))
-      {
-        folder=folder.parent_path();
-        versionFileName=folder.wstring()+L"\\.ImageMagick\\ImageMagick.version.h";
-        versionFile=filesystem::path(versionFileName).wstring();
-        if (!filesystem::exists(versionFile))
-          throwException(L"Unable to find version file for: " + _name);
-      }
-
-    version.open(versionFileName);
-    while (!version.eof())
+    wifstream versionFile(versionFileName);
+    if (versionFile)
     {
       wstring
         line;
 
-      line=readLine(version);
-      if (!startsWith(line,L"DELEGATE_VERSION_NUM"))
-        continue;
-
-      line=line.substr(line.find_last_of(L" "));
-      line=replace(line,L",",L".");
-      _versions.push_back(line);
-      break;
+      getline(versionFile,line);
+      getline(versionFile,line);
+      if (!startsWith(line,L"#define DELEGATE_VERSION_STRING "))
+        throwException(L"Invalid version file: " + versionFileName);
+      line=line.substr(33,line.length() - 34);
+      licenseFile << L"[ " << projectName << L" " << line << L" ]" << endl << endl;
     }
-    version.close();
+    else
+    {
+      licenseFile << L"[ " << projectName << L" ]" << endl << endl;
+    }
+    licenseFile << sourceLicenseFile.rdbuf() << endl;
+  }
+}
 
-    _notice+=L"[ "+folder.stem().wstring()+_versions.back()+L" ] copyright:\r\n";
-    _notice+=readLicense(licenseFileName)+L"\r\n";
+void Project::writeLinkProperties(wofstream& file) const
+{
+  wstring preBuildLibs;
+
+  if (_options.isStaticBuild && isApplication())
+  {
+    for (const auto& library : _options.preBuildLibs())
+      preBuildLibs += library + L";";
+  }
+
+  file << "  <ItemDefinitionGroup>" << endl;
+  file << "    <Link>" << endl;
+  file << "      <AdditionalLibraryDirectories>$(SolutionDir)Artifacts\\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>" << endl;
+  file << "      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>" << endl;
+  file << "      <AdditionalDependencies Condition=\"'$(Configuration)'=='Debug'\">" << additionalDependencies(true) << "%(AdditionalDependencies)</AdditionalDependencies>" << endl;
+  file << "      <AdditionalDependencies Condition=\"'$(Configuration)'=='Release'\">" << preBuildLibs << additionalDependencies(false) << "%(AdditionalDependencies)</AdditionalDependencies>" << endl;
+  file << "      <ImportLibrary Condition=\"'$(Configuration)'=='Debug'\">$(SolutionDir)Artifacts\\lib\\" << targetName(true) <<".lib</ImportLibrary>" << endl;
+  file << "      <ImportLibrary Condition=\"'$(Configuration)'=='Release'\">$(SolutionDir)Artifacts\\lib\\" << targetName(false) <<".lib</ImportLibrary>" << endl;
+  if (_config.useUnicode())
+    file << "      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>" << endl;
+  if (!_config.moduleDefinitionFile().empty())
+    file << "      <ModuleDefinitionFile>$(SolutionDir)" <<  _config.directory() << _config.moduleDefinitionFile() << "</ModuleDefinitionFile>" << endl;
+  file << "    </Link>" << endl;
+  file << "  </ItemDefinitionGroup>" << endl;
+}
+
+void Project::writeMagickBaseconfigDefine() const
+{
+  if (_config.magickBaseconfigDefine().empty())
+    return;
+
+  wstring targetDirectory=_options.rootDirectory + L"Artifacts\\config\\";
+  filesystem::create_directories(targetDirectory);
+
+  wstring configFileName=targetDirectory + name() + L".h";
+  wofstream configFile(configFileName);
+    if (!configFile)
+      throwException(L"Failed to open license file: " + configFileName);
+
+  configFile << _config.magickBaseconfigDefine();
+}
+
+void Project::writeOutputProperties(wofstream &file) const
+{
+  file << "  <PropertyGroup>" << endl;
+  file << "    <LinkIncremental>false</LinkIncremental>" << endl;
+  file << "    <OutDir>$(SolutionDir)Artifacts\\" << outputDirectory() << "\\</OutDir>" << endl;
+  file << "    <TargetName Condition=\"'$(Configuration)'=='Debug'\">" << targetName(true) << "</TargetName>" << endl;
+  file << "    <TargetName Condition=\"'$(Configuration)'=='Release'\">" << targetName(false) << "</TargetName>" << endl;
+  if (_options.visualStudioVersion >= VisualStudioVersion::VS2019)
+    file << "    <UseDebugLibraries Condition=\"'$(Configuration)'=='Debug'\">true</UseDebugLibraries>" << endl;
+  file << "  </PropertyGroup>" << endl;
+}
+
+void Project::writeProperties(wofstream &file) const
+{
+  file << "  <PropertyGroup Label=\"Globals\">" << endl;
+  file << "    <ProjectName>" << fullName() << "</ProjectName>" << endl;
+  file << "    <ProjectGuid>{" << guid() << "}</ProjectGuid>" << endl;
+  file << "    <Keyword>" << _options.platform() << "Proj</Keyword>" << endl;
+  file << "  </PropertyGroup>" << endl;
+  file << "  <Import Project=\"$(VCTargetsPath)\\Microsoft.Cpp.Default.props\" />" << endl;
+  file << "  <PropertyGroup Label=\"Configuration\">" << endl;
+  file << "    <CharacterSet>" << characterSet() << "</CharacterSet>" << endl;
+  file << "    <ConfigurationType>" << configurationType() << "</ConfigurationType>" << endl;
+  file << "    <PlatformToolset>" << platformToolset() << "</PlatformToolset>" << endl;
+  file << "    <UseOfMfc>false</UseOfMfc>" << endl;
+  file << "  </PropertyGroup>" << endl;
+  file << "  <Import Project=\"$(VCTargetsPath)\\Microsoft.Cpp.props\" />" << endl;
+}
+
+void Project::writePropsImports(wofstream &file,bool includeMasm) const
+{
+  if (includeMasm)
+  {
+    file << "  <ImportGroup Label=\"ExtensionSettings\">" << endl;
+    file << "    <Import Project=\"$(VCTargetsPath)\\BuildCustomizations\\masm.props\" />" << endl;
+    file << "  </ImportGroup>" << endl;
+  }
+}
+
+void Project::writeReference(wofstream &file,const Project &project) const
+{
+    file << "    <ProjectReference Include=\"$(SolutionDir)" << project.fileName() << "\">" << endl;
+    file << "      <Project>{" << project.guid() << "}</Project>" << endl;
+    file << "      <Name>" << project.fullName() << "</Name>" << endl;
+    file << "    </ProjectReference>" << endl;
+}
+
+void Project::writeReferences(wofstream &file,const vector<Project> &allProjects) const
+{
+  if (_config.references().empty())
+    return;
+
+  file << "  <ItemGroup>" << endl;
+
+  for (const auto& reference : _config.references())
+  {
+    auto project = find_if(allProjects.begin(), allProjects.end(),[&reference](const Project& p) { return(p.isLibrary() && p.name() == reference); });
+    if (project == allProjects.end())
+      continue;
+
+    writeReference(file,project[0]);
+  }
+
+  for (const auto& reference : _config.coderReferences())
+  {
+    auto project = find_if(allProjects.begin(), allProjects.end(),[&reference](const Project& p) { return(p.type() == ProjectType::Coder && p.name() == reference); });
+    if (project == allProjects.end())
+      continue;
+
+    writeReference(file,project[0]);
+  }
+
+  if (isApplication())
+  {
+    for (const auto& project : allProjects)
+    {
+      if (project.type() == ProjectType::Coder || project.type() == ProjectType::Filter)
+        writeReference(file,project);
+    }
+  }
+
+  file << "  </ItemGroup>" << endl;
+}
+
+void Project::writeTargetsImports(wofstream &file,bool includeMasm) const
+{
+  file << "  <Import Project=\"$(VCTargetsPath)\\Microsoft.Cpp.targets\" />" << endl;
+  if (includeMasm)
+  {
+    file << "  <ImportGroup Label=\"ExtensionTargets\">" << endl;
+    file << "    <Import Project=\"$(VCTargetsPath)\\BuildCustomizations\\masm.targets\" />" << endl;
+    file << "  </ImportGroup>" << endl;
   }
 }

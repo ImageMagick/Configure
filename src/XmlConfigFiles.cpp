@@ -17,31 +17,28 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
+#include "XmlConfigFiles.h"
 
-#include "Options.h"
-#include "Project.h"
-
-class Solution
+const wstring XmlConfigFiles::getPolicyFileName(const Options &options)
 {
-public:
-  static void write(const Options &options,const vector<Project> &projects);
+  switch(options.policyConfig)
+  {
+    case PolicyConfig::Limited: return L"policy-limited.xml";
+    case PolicyConfig::Open: return L"policy-open.xml";
+    case PolicyConfig::Secure: return L"policy-secure.xml";
+    case PolicyConfig::WebSafe: return L"policy-websafe.xml";
+    default: throwException(L"Unknown policy configuration type.");
+  }
+}
 
-private:
-  static const wstring solutionFolder(const Project & project);
+void XmlConfigFiles::write(const Options &options)
+{
+  const wstring configFolder=options.rootDirectory + L"ImageMagick\\config\\";
+  const wstring targetFolder=options.rootDirectory + L"Artifacts\\bin\\";
 
-  static const wstring solutionName(const Options &options);
+  filesystem::copy_file(configFolder + getPolicyFileName(options),targetFolder + L"policy.xml",filesystem::copy_options::overwrite_existing);
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
-
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
-
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
-};
+  vector<wstring> xmlFiles = { L"colors.xml", L"english.xml", L"locale.xml", L"log.xml", L"mime.xml", L"thresholds.xml" };
+  for (auto& xmlFile : xmlFiles)
+    filesystem::copy_file(configFolder + xmlFile,targetFolder + xmlFile,filesystem::copy_options::overwrite_existing);
+}

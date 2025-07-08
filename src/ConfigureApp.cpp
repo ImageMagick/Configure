@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,12 +17,21 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "stdafx.h"
-#include "CommandLineInfo.h"
 #include "ConfigureApp.h"
+
+#include "Configs.h"
 #include "ConfigureWizard.h"
+#include "CommandLineInfo.h"
+#include "InstallerConfig.h"
+#include "MagickBaseConfig.h"
+#include "Notice.h"
+#include "Options.h"
+#include "PerlMagick.h"
+#include "Project.h"
+#include "Projects.h"
 #include "Solution.h"
-#include "WaitDialog.h"
+#include "ThresholdMap.h"
+#include "XmlConfigFiles.h"
 
 BEGIN_MESSAGE_MAP(ConfigureApp, CWinApp)
   ON_COMMAND(ID_HELP, CWinApp::OnHelp)
@@ -34,65 +43,125 @@ ConfigureApp::ConfigureApp()
 {
 }
 
-BOOL ConfigureApp::Init()
+BOOL ConfigureApp::InitInstance()
 {
-  ConfigureWizard
-    wizard;
-  
-  INT_PTR
-    response;
+  tryAttachConsole();
 
-  Solution
-    solution(wizard);
+  try
+  {
+    Options options(getRootDirectory());
+    options.checkImageMagickVersion();
 
-  WaitDialog
-    waitDialog;
+    CommandLineInfo info=CommandLineInfo(options);
+    ParseCommandLine(info);
 
-  CommandLineInfo info=CommandLineInfo(wizard);
-  ParseCommandLine(info);
+    if (info.showWizard)
+    {
+      ConfigureWizard
+        wizard;
 
-  wizard.parseCommandLineInfo(info);
+      wizard.setOptions(options);
 
-  solution.loadProjects();
+      if (wizard.DoModal() != ID_WIZFINISH)
+        return(FALSE);
+    }
+    
+    WaitDialog waitDialog;
+    waitDialog.setSteps(6);
 
-  response=ID_WIZFINISH;
-  if (info.noWizard() == FALSE)
-    response=wizard.DoModal();
-
-  if (response != ID_WIZFINISH)
+    cleanupFolders(options,waitDialog);
+    return(createFiles(options,waitDialog));
+  }
+  catch (exception ex)
+  {
+    cerr << "Exception caught: " << ex.what() << endl;
     return(FALSE);
+  } 
+}
 
-  solution.write(waitDialog);
+void ConfigureApp::cleanupFolders(Options &options,WaitDialog &waitDialog) const
+{
+  waitDialog.nextStep(L"Cleaning up folders...");
+  filesystem::remove_all(options.rootDirectory + L"Artifacts\\demo");
+  filesystem::remove_all(options.rootDirectory + L"Artifacts\\fuzz");
+  
+#ifdef _DEBUG
+  filesystem::remove_all(options.rootDirectory + L"Artifacts\\config");
+  filesystem::remove_all(options.rootDirectory + L"Artifacts\\include");
+  filesystem::remove_all(options.rootDirectory + L"Artifacts\\license");
+#endif
+}
+
+BOOL ConfigureApp::createFiles(Options &options,WaitDialog &waitDialog) const
+{
+  waitDialog.nextStep(L"Loading configuration files...");
+  vector<Config> configs=Configs::load(options);
+
+  waitDialog.nextStep(L"Creating projects...");
+  vector<Project> projects=Projects::create(options,configs);
+
+  waitDialog.nextStep(L"Writing project files...");
+  Projects::write(projects);
+
+  waitDialog.nextStep(L"Writing solution files...");
+  Solution::write(options,projects);
+
+  waitDialog.nextStep(L"Loading version information...");
+  optional<VersionInfo> versionInfo=VersionInfo::load(options);
+  if (versionInfo)
+    writeImageMagickFiles(options, *versionInfo,waitDialog);
+
   return(TRUE);
 }
 
-
-BOOL ConfigureApp::InitInstance()
+const wstring ConfigureApp::getRootDirectory() const
 {
-  if (AttachConsole(ATTACH_PARENT_PROCESS))
+  filesystem::path directory=filesystem::current_path();
+  while (directory.has_parent_path())
   {
-    try
-    {
-      cout << "Console attached successfully." << endl;
-      return Init();
-    }
-    catch (exception ex)
-    {
-      FILE *fpstderr = stderr;
-      if (freopen_s(&fpstderr, "CONOUT$", "w", stderr) == 0)
-      {
-        cerr << "Exception caught: " << ex.what() << endl;
-      }
-      else
-      {
-        cout << "Failed to redirect stderr." << endl;
-      }
-      return(FALSE);
-    }
+    if (directory.filename() == L"Configure")
+      return directory.parent_path().wstring() + L"\\";
+
+    directory=directory.parent_path();
   }
-  else
-  {
-    cout << "Failed to attach console." << endl;
-    return Init();
-  }
+
+  throwException(L"Cannot find root directory for ConfigureApp.");
+}
+
+void ConfigureApp::tryAttachConsole()
+{
+  if (!AttachConsole(ATTACH_PARENT_PROCESS))
+    return;
+
+  freopen_s((FILE**)stdout,"CONOUT$","w",stdout);
+  freopen_s((FILE**)stderr,"CONOUT$","w",stderr);
+  ios::sync_with_stdio();
+
+  cout << endl << "Console attached successfully." << endl;
+}
+
+void ConfigureApp::writeImageMagickFiles(const Options &options,const VersionInfo &versionInfo,WaitDialog &waitDialog) const
+{
+  waitDialog.setSteps(7);
+
+  waitDialog.nextStep(L"Writing version information...");
+  versionInfo.write();
+
+  waitDialog.nextStep(L"Writing magick-base-config.h...");
+  MagickBaseConfig::write(options);
+
+  waitDialog.nextStep(L"Writing threshold map...");
+  ThresholdMap::write(options);
+
+  waitDialog.nextStep(L"Writing xml config files...");
+  XmlConfigFiles::write(options);
+
+  waitDialog.nextStep(L"Writing PerlMagick configuration...");
+  PerlMagick::configure(options);
+
+  waitDialog.nextStep(L"Writing notice...");
+  Notice::write(options,versionInfo);
+
+  waitDialog.nextStep(L"Writing installer configuration...");
+  InstallerConfig::write(options,versionInfo);
 }

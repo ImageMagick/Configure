@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,147 +17,115 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __Project__
-#define __Project__
+#pragma once
+#include "stdafx.h"
 
-#include "ConfigureWizard.h"
-#include "ProjectFile.h"
-#include "Shared.h"
+#include "Config.h"
+#include "Options.h"
 
 class Project
 {
 public:
-  Compiler compiler() const;
+  const wstring directory() const { return(_config.directory()); };
 
-  const wstring configDefine() const;
+  const wstring fileName() const { return(_options.projectsDirectory() + fullName() + L"\\" + fullName() + L".vcxproj"); }
 
-  const vector<wstring> &defines();
+  const wstring fullName() const { return(prefix() + L"_" + name()); }
 
-  const vector<wstring> &definesDll();
+  const wstring guid() const { return(createGuid(fullName())); };
 
-  const vector<wstring> &definesLib();
+  const bool isLibrary() const { return(_config.isLibrary()); };
 
-  const vector<wstring> &dependencies();
+  const wstring name() const { return(_config.name()); };
 
-  const vector<wstring> &directories();
+  const ProjectType type() const { return(_config.type()); };
 
-  const vector<wstring> &excludes();
+  void copyConfigInfo(const Config& config);
 
-  const vector<ProjectFile*> &files() const;
+  static Project create(const Config &config,const Options &options);
 
-  const vector<wstring> &includes();
+  const set<wstring>& references() const { return(_config.references()); };
 
-  const vector<wstring> &includesNasm();
+  void rename(const wstring& name);
 
-  const vector<wstring> &platformExcludes(Platform platform);
+  void setFiles(const vector<wstring> files);
 
-  const wstring configPath(const wstring &subPath) const;
+  vector<Project> splitToFiles(const vector<wstring> additionalFiles = {}) const;
 
-  const wstring filePath(const wstring &subPath) const;
+  void write(const vector<Project> &allProjects) const;
 
-  bool isConsole() const;
+  void writeFilters() const;
 
-  bool isDll() const;
+  void writeLicense() const;
 
-  bool isExe() const;
-
-  bool isFuzz() const;
-
-  bool isLib() const;
-
-  bool isModule() const;
-
-  bool isOptimizationDisable() const;
-
-  bool isSupported(const VisualStudioVersion visualStudioVersion) const;
-
-  const vector<wstring> &libraries();
-
-  const wstring moduleDefinitionFile() const;
-
-  const wstring name() const;
-
-  const wstring notice() const;
-
-  const vector<wstring> &references();
-
-  bool treatWarningAsError() const;
-
-  bool useNasm() const;
-
-  bool useOpenCL() const;
-
-  bool useUnicode() const;
-
-  const wstring version() const;
-
-  int warningLevel() const;
-
-  void checkFiles(const VisualStudioVersion visualStudioVersion);
-
-  static Project* create(const ConfigureWizard &wizard,const wstring &configFolder,const wstring &filesFolder,const wstring& name);
-
-  bool loadFiles();
-
-  void mergeProjectFiles();
-
-  bool shouldSkip() const;
-
-  void updateProjectNames();
-
-  void updateProjectNames(vector<wstring> &vector);
+  void writeMagickBaseconfigDefine() const;
 
 private:
-  Project(const ConfigureWizard &wizard,const wstring &configFolder,const wstring &filesFolder,const wstring &name);
+  Project(const Config &config,const Options &options);
 
-  void addLines(wifstream &config,wstring &value);
+  const wstring characterSet() const;
 
-  void addLines(wifstream &config,vector<wstring> &container);
+  const Compiler compiler() const;
 
-  void loadConfig(wifstream &config);
+  const wstring configurationType() const;
 
-  void loadModules();
+  const wstring defines() const;
 
-  const vector<wstring> readLicenseFilenames(const wstring &line) const;
+  const bool hasAsmfiles() const;
 
-  void setNoticeAndVersion();
+  const wstring includeDirectories() const;
 
-  wstring               _configDefine;
-  wstring               _configFolder;
-  vector<wstring>       _defines;
-  vector<wstring>       _definesDll;
-  vector<wstring>       _definesLib;
-  vector<wstring>       _dependencies;
-  vector<wstring>       _directories;
-  bool                  _disabledARM64;
-  bool                  _disableOptimization;
-  vector<wstring>       _excludes;
-  vector<wstring>       _excludesX86;
-  vector<wstring>       _excludesX64;
-  vector<wstring>       _excludesARM64;
-  vector<ProjectFile*>  _files;
-  wstring               _filesFolder;
-  bool                  _hasIncompatibleLicense;
-  vector<wstring>       _includes;
-  vector<wstring>       _includesNasm;
-  bool                  _isOptional;
-  vector<wstring>       _libraries;
-  vector<wstring>       _licenseFileNames;
-  bool                  _magickProject;
-  VisualStudioVersion   _minimumVisualStudioVersion;
-  wstring               _moduleDefinitionFile;
-  wstring               _modulePrefix;
-  wstring               _name;
-  wstring               _notice;
-  bool                  _onlyImageMagick7;
-  wstring               _path;
-  vector<wstring>       _references;
-  ProjectType           _type;
-  bool                  _useNasm;
-  bool                  _useOpenCL;
-  bool                  _useUnicode;
-  vector<wstring>       _versions;
-  const ConfigureWizard &_wizard;
+  const bool isApplication() const;
+
+  const wstring nasmOptions() const;
+
+  const wstring openMPSupport() const;
+
+  const wstring outputDirectory() const;
+
+  const wstring platformToolset() const;
+
+  const wstring prefix() const;
+
+  const wstring warningLevel() const;
+
+  const wstring additionalDependencies(bool debug) const;
+
+  bool isExcluded(const wstring fileName,set<wstring> &excludes,multiset<wstring> &foundExcludes) const;
+
+  void loadFiles();
+
+  void loadFiles(const wstring directory,set<wstring> &excludes,multiset<wstring> &foundExcludes);
+
+  const wstring runtimeLibrary(bool debug) const;
+
+  const wstring targetName(bool debug) const;
+
+  void writeCompilationConfiguration(wofstream &file) const;
+
+  void writeConfiguration(wofstream &file) const;
+
+  void writeCopyIncludes(wofstream &file) const;
+  
+  void writeFiles(wofstream &file) const;
+
+  void writeLibProperties(wofstream& file) const;
+
+  void writeLinkProperties(wofstream& file) const;
+
+  void writeOutputProperties(wofstream &file) const;
+
+  void writeProperties(wofstream &file) const;
+
+  void writePropsImports(wofstream& file,bool includeMasm) const;
+
+  void writeReference(wofstream &file,const Project &project) const;
+
+  void writeReferences(wofstream &file,const vector<Project> &allProjects) const;
+
+  void writeTargetsImports(wofstream& file,bool includeMasm) const;
+
+  Config _config;
+  set<wstring> _files;
+  const Options _options;
 };
-
-#endif // __Project__

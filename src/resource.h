@@ -13,26 +13,26 @@
 #define IDB_LOGO1                       132
 
 #define IDC_WELCOME_TEXT                1000
-#define IDC_PROJECT_DYNAMIC_MT          1001
-#define IDC_PROJECT_STATIC_MT_DLL       1002
-#define IDC_PROJECT_STATIC_MT           1003
-#define IDC_PLATFORM                    1005
-#define IDC_QUANTUM_DEPTH               1006
-#define IDC_HDRI                        1007
-#define IDC_VISUALSTUDIO                1008
-#define IDC_POLICYCONFIG                1009
-#define IDC_OPEN_MP                     1010
-#define IDC_OPEN_CL                     1011
-#define IDC_ENABLE_DPC                  1012
-#define IDC_INCLUDE_OPTIONAL            1013
-#define IDC_INCLUDE_INCOMPATIBLE        1014
-#define IDC_EXCLUDE_DEPRECATED          1015
-#define IDC_INSTALLED_SUPPORT           1016
-#define IDC_ZERO_CONFIGURATION_SUPPORT  1017
-#define IDC_FINISHED_TEXT               1018
-#define IDD_WAITDIALOG                  1019
-#define IDC_MSGCTRL                     1020
-#define IDC_PROGRESSCTRL                1021
+#define IDC_PROJECT_DYNAMIC             1001
+#define IDC_PROJECT_STATIC              1002
+#define IDC_LINK_RUNTIME                1003
+#define IDC_PLATFORM                    1004
+#define IDC_QUANTUM_DEPTH               1005
+#define IDC_HDRI                        1006
+#define IDC_VISUALSTUDIO                1007
+#define IDC_POLICYCONFIG                1008
+#define IDC_OPEN_MP                     1009
+#define IDC_OPEN_CL                     1010
+#define IDC_ENABLE_DPC                  1011
+#define IDC_INCLUDE_OPTIONAL            1012
+#define IDC_INCLUDE_INCOMPATIBLE        1013
+#define IDC_EXCLUDE_DEPRECATED          1014
+#define IDC_INSTALLED_SUPPORT           1015
+#define IDC_ZERO_CONFIGURATION_SUPPORT  1016
+#define IDC_FINISHED_TEXT               1017
+#define IDD_WAITDIALOG                  1018
+#define IDC_MSGCTRL                     1019
+#define IDC_PROGRESSCTRL                1020
 
 // Next default values for new objects
 // 

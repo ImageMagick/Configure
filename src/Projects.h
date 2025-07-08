@@ -20,28 +20,27 @@
 #pragma once
 #include "stdafx.h"
 
+#include "Config.h"
 #include "Options.h"
 #include "Project.h"
 
-class Solution
+class Projects
 {
 public:
-  static void write(const Options &options,const vector<Project> &projects);
+  static vector<Project> create(const Options &options,vector<Config> &configs);
+
+  static void write(const vector<Project> &projects);
 
 private:
-  static const wstring solutionFolder(const Project & project);
+  static void createCoderProjects(const Options &options,vector<Config> &configs,vector<Project> &projects);
 
-  static const wstring solutionName(const Options &options);
+  static void createDemoProjects(const Options &options,vector<Config> &configs,vector<Project> &projects);
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+  static void createFilterProjects(const Options &options,vector<Config> &configs,vector<Project> &projects);
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+  static void createFuzzProjects(const Options &options,vector<Config> &configs,vector<Project> &projects);
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
+  static void createUtilitiesProjects(const Options &options,vector<Config> &configs,vector<Project> &projects);
 
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
+  static void createUtilityProject(const Project &utilitiesProject,wstring name,wstring fileName,vector<Project> &projects);
 };

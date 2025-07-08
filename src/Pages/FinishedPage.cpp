@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,8 +17,6 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#include "..\stdafx.h"
-#include "..\ConfigureApp.h"
 #include "FinishedPage.h"
 
 IMPLEMENT_DYNCREATE(FinishedPage,CPropertyPage)
@@ -26,10 +24,6 @@ IMPLEMENT_DYNCREATE(FinishedPage,CPropertyPage)
 FinishedPage::FinishedPage() : CPropertyPage(IDD_FINISHED_PAGE)
 {
   _text="";
-}
-
-FinishedPage::~FinishedPage()
-{
 }
 
 BOOL FinishedPage::OnSetActive() 
@@ -40,7 +34,7 @@ BOOL FinishedPage::OnSetActive()
   propertySheet=(CPropertySheet*) GetParent();
   propertySheet->SetWizardButtons(PSWIZB_BACK | PSWIZB_FINISH);
 
-  return CPropertyPage::OnSetActive();
+  return(CPropertyPage::OnSetActive());
 }
 
 void FinishedPage::DoDataExchange(CDataExchange* pDX)

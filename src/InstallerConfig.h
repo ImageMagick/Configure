@@ -21,27 +21,11 @@
 #include "stdafx.h"
 
 #include "Options.h"
-#include "Project.h"
+#include "VersionInfo.h"
 
-class Solution
+class InstallerConfig
 {
 public:
-  static void write(const Options &options,const vector<Project> &projects);
-
-private:
-  static const wstring solutionFolder(const Project & project);
-
-  static const wstring solutionName(const Options &options);
-
-  static void writeConfigFolder(wofstream& file,const Options& options);
-
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
-
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
+  static void write(const Options &options,const VersionInfo &versionInfo);
 };
+

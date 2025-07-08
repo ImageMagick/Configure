@@ -17,31 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
+#include "ThresholdMap.h"
 
-#include "Options.h"
-#include "Project.h"
-
-class Solution
+void ThresholdMap::write(const Options &options)
 {
-public:
-  static void write(const Options &options,const vector<Project> &projects);
+  if (!options.zeroConfigurationSupport)
+    return;
 
-private:
-  static const wstring solutionFolder(const Project & project);
+  wifstream thresholds(options.rootDirectory + L"Artifacts\\bin\\thresholds.xml");
+  if (!thresholds)
+    throwException(L"Unable to open thresholds.xml");
 
-  static const wstring solutionName(const Options &options);
+  wofstream thresholdMap(options.rootDirectory + L"ImageMagick\\" + options.magickCoreName() + L"\\threshold-map.h");
+  if (!thresholdMap)
+    throwException(L"Unable to open threshold-map.h");
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+  thresholdMap << "static const char *const BuiltinMap=" << endl;
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+  wstring line;
+  while (getline(thresholds,line))
+  {
+    if (line.length() == 0)
+      continue;
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
+    line=replace(line,L"\"",L"\\\"");
+    thresholdMap << "\"" << line << "\"" << endl;
+  }
 
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
-};
+  thresholdMap << ";";
+}

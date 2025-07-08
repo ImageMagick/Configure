@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,48 +17,56 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __VersionInfo__
-#define __VersionInfo__
+#pragma once
+#include "stdafx.h"
+
+#include "Options.h"
 
 class VersionInfo
 {
 public:
-
-  VersionInfo();
-
-  const wstring fullVersion() const;
-
-  const wstring gitRevision() const;
-
-  const wstring interfaceVersion() const;
+  const wstring version() const;
 
   const wstring libAddendum() const;
 
-  const wstring libVersion() const;
+  const wstring releaseDate() const { return _releaseDate; }
+
+  static optional<VersionInfo> load(const Options& options);
+
+  void write() const;
+
+  void write(wstring inputFile,wstring outputFile) const;
+
+private:
+  VersionInfo(const Options& options);
+
+  const wstring fullVersion() const;
+
+  const wstring interfaceVersion() const;
 
   const wstring libVersionNumber() const;
 
-  bool load();
-
-  const wstring majorVersion() const;
+  const wstring ppInterfaceVersion() const;
 
   const wstring ppLibVersionNumber() const;
 
-  const wstring ppInterfaceVersion() const;
-
-  const wstring releaseDate() const;
-
-  const wstring version() const;
+  const wstring quantumDepthBits() const;
 
   const wstring versionNumber() const;
 
-private:
+  const wstring visualStudioVersionName() const;
 
   const wstring executeCommand(const wstring &command) const;
-
+  
   const wstring getFileModificationDate(const wstring &fileName,const wstring &format) const;
+  
+  void load(const wstring fileName);
 
   void loadValue(const wstring &line,const wstring &keyword,wstring *value) const;
+
+  wstring replaceVariable(const wstring &line,const size_t offset) const;
+
+  wstring replaceVariable(const wstring& line,const size_t offset,const size_t length,const wstring &newValue) const;
 
   void setGitRevision();
 
@@ -73,11 +81,10 @@ private:
   wstring _major;
   wstring _minor;
   wstring _micro;
+  const Options _options;
   wstring _patchlevel;
   wstring _ppLibraryCurrent;
   wstring _ppLibraryRevision;
   wstring _ppLibraryAge;
   wstring _releaseDate;
 };
-
-#endif // __VersionInfo__

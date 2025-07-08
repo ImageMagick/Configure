@@ -17,31 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#pragma once
-#include "stdafx.h"
+#include "PerlMagick.h"
 
-#include "Options.h"
-#include "Project.h"
-
-class Solution
+void PerlMagick::configure(const Options &options)
 {
-public:
-  static void write(const Options &options,const vector<Project> &projects);
+  filesystem::copy_file(options.rootDirectory + L"Build\\PerlMagick\\Zip.ps1", options.rootDirectory + L"ImageMagick\\PerlMagick\\Zip.ps1",filesystem::copy_options::overwrite_existing);
 
-private:
-  static const wstring solutionFolder(const Project & project);
+  wifstream makeFileIn(options.rootDirectory + L"Build\\PerlMagick\\Makefile.PL.in");
+  if (!makeFileIn)
+    throwException(L"Unable to open Makefile.PL.in for reading.");
 
-  static const wstring solutionName(const Options &options);
+  wofstream makeFile(options.rootDirectory + L"ImageMagick\\PerlMagick\\Makefile.PL");
+  if (!makeFile)
+    throwException(L"Unable to open Makefile.PL for writing.");
 
-  static void writeConfigFolder(wofstream& file,const Options& options);
+  wstring libName=magickCoreLibraryName(options);
 
-  static void writeProjectFolders(wofstream &file,const vector<Project>& projects);
+  wstring line;
+  while (getline(makeFileIn,line))
+  {
+    line=replace(line,L"$$LIB_NAME$$",libName);
+    line=replace(line,L"$$PLATFORM$$",options.architectureName());
+    makeFile << line << endl;
+  }
+}
 
-  static void writeProjects(wofstream& file,const vector<Project>& projects);
-
-  static void writeProjectsConfiguration(wofstream& file,const Options& options,const vector<Project>& projects);
-
-  static void writeProjectsNesting(wofstream& file,const vector<Project>& projects);
-
-  static void writeVisualStudioVersion(wofstream& file,const Options &options);
-};
+wstring PerlMagick::magickCoreLibraryName(const Options &options)
+{
+  return(L"CORE_RL_" + options.magickCoreName() + L"_.a");
+}

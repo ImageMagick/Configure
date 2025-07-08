@@ -1,7 +1,7 @@
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
-%  Copyright 2014-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -17,15 +17,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __ConfigureWizard__
-#define __ConfigureWizard__
+#pragma once
+#include "stdafx.h"
 
 #include "Pages\WelcomePage.h"
 #include "Pages\TargetPage.h"
 #include "Pages\FinishedPage.h"
-#include "Shared.h"
-
-class CommandLineInfo;
 
 class ConfigureWizard : public CPropertySheet
 {
@@ -36,70 +33,16 @@ public:
 
   virtual ~ConfigureWizard();
 
-  const wstring binDirectory() const;
-
-  const wstring channelMaskDepth() const;
-
-  bool enableDpc() const;
-
-  bool excludeAliases() const;
-
-  bool excludeDeprecated() const;
-
-  bool includeIncompatibleLicense() const;
-
-  bool includeOptional() const;
-
-  bool installedSupport() const;
-
-  bool isImageMagick7() const;
-
-  const wstring machineName() const;
-
-  const wstring magickCoreProjectName() const;
-
-  Platform platform() const;
-
-  const wstring platformName() const;
-
-  const wstring platformAlias() const;
-
-  PolicyConfig policyConfig() const;
-
-  QuantumDepth quantumDepth() const;
-
-  const wstring quantumDepthBits() const;
-
-  const wstring solutionName() const;
-
-  SolutionType solutionType() const;
-
-  bool useHDRI() const;
-
-  bool useOpenCL() const;
-
-  bool useOpenMP() const;
-
-  void updateProjectNames(wstring &value) const;
-
-  VisualStudioVersion visualStudioVersion() const;
-
-  const wstring visualStudioVersionName() const;
-
-  bool zeroConfigurationSupport() const;
-
-  void parseCommandLineInfo(const CommandLineInfo &info);
+  void setOptions(Options& options)
+  {
+    _targetPage.setOptions(options);
+  }
 
 protected:
-
   DECLARE_MESSAGE_MAP()
 
 private:
-
   FinishedPage _finishedPage;
-  bool         _isImageMagick7; 
-  TargetPage   _targetPage;
-  WelcomePage  _welcomePage;
+  TargetPage _targetPage;
+  WelcomePage _welcomePage;
 };
-
-#endif // __ConfigureWizard__

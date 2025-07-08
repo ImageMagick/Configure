@@ -17,20 +17,15 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-#ifndef __WaitDialog__
-#define __WaitDialog__
-
-#include "resource.h"
+#pragma once
+#include "stdafx.h"
 
 class WaitDialog : public CDialog
 {
 public:
-
   WaitDialog();
 
   ~WaitDialog();
-
-  int getSteps() const;
 
   void setSteps(const int steps);
 
@@ -47,5 +42,3 @@ private:
   int _steps;
   int _current;
 };
-
-#endif // __WaitDialog__
