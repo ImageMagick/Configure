@@ -59,11 +59,13 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Sign executables
-      run: sign code trusted-signing *.exe `
+      run: sign code trusted-signing `
         --trusted-signing-account ImageMagick `
         --trusted-signing-certificate-profile ImageMagick `
         --trusted-signing-endpoint https://eus.codesigning.azure.net `
-        --verbosity information
+        --azure-credential-type azure-cli `
+        --verbosity information `
+        *.exe
       working-directory: ${{github.workspace}}/Artifacts
 
     - name: Create Configs archive
@@ -87,4 +89,4 @@ jobs:
       shell: cmd
       env:
         GH_TOKEN: ${{github.token}}
-      run: gh release create ${{env.release}} --title "Release ${{env.release}}"  ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
+      run: gh release create ${{env.release}} --title "Release ${{env.release}}" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
