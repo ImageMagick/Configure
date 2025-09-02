@@ -80,7 +80,7 @@ void Solution::writeConfigDirectory(wofstream &file,const Options& options)
     if (!entry.is_regular_file())
       continue;
 
-    const auto fileName=entry.path().filename();
+    const auto fileName=entry.path().filename().wstring();
     if (!endsWith(fileName, L".xml"))
       continue;
 
