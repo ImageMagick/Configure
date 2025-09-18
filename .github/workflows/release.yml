@@ -2,6 +2,8 @@ on:
   workflow_dispatch:
 
 name: release
+permissions:
+  contents: read
 jobs:
   build:
     name: Build (${{matrix.architecture}})

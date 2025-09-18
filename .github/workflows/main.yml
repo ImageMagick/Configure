@@ -4,6 +4,8 @@ on:
     - main
 
 name: main
+permissions:
+  contents: read
 jobs:
   build:
     name: Build (${{matrix.architecture}}, ${{matrix.configuration}})
