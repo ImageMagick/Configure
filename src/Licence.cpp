@@ -25,42 +25,39 @@ void License::write(const Options &options,const Config &config,const wstring na
   const auto targetDirectory=options.rootDirectory + L"Artifacts\\license\\";
   filesystem::create_directories(targetDirectory);
 
-  for (const auto& license : config.licenses())
+  const auto sourceFileName=options.rootDirectory + config.directory() + config.licenseFile();
+  wifstream sourceLicenseFile(sourceFileName);
+  if (!sourceLicenseFile)
+    throwException(L"Failed to open license file: " + sourceFileName);
+
+  const auto path=filesystem::path(sourceFileName).parent_path();
+  auto versionFileName=path.wstring() + L"\\.ImageMagick\\ImageMagick.version.h";
+  auto projectName=path.filename().wstring();
+  if (!filesystem::exists(versionFileName))
   {
-    const auto sourceFileName=options.rootDirectory + config.directory() + license;
-    wifstream sourceLicenseFile(sourceFileName);
-    if (!sourceLicenseFile)
-      throwException(L"Failed to open license file: " + sourceFileName);
-
-    const auto path=filesystem::path(sourceFileName).parent_path();
-    auto versionFileName=path.wstring() + L"\\.ImageMagick\\ImageMagick.version.h";
-    auto projectName=path.filename().wstring();
-    if (!filesystem::exists(versionFileName))
-    {
-      versionFileName=options.rootDirectory + config.directory() + L".ImageMagick\\ImageMagick.version.h";
-      projectName=name;
-    }
-
-    wofstream licenseFile(targetDirectory + projectName + L".txt");
-    wifstream versionFile(versionFileName);
-    if (versionFile)
-    {
-      wstring
-        line;
-
-      getline(versionFile,line);
-      getline(versionFile,line);
-      if (!startsWith(line,L"#define DELEGATE_VERSION_STRING "))
-        throwException(L"Invalid version file: " + versionFileName);
-      line=line.substr(33,line.length() - 34);
-      licenseFile << L"[ " << projectName << L" " << line << L" ]" << endl << endl;
-    }
-    else
-    {
-      licenseFile << L"[ " << projectName << L" ]" << endl << endl;
-    }
-    licenseFile << sourceLicenseFile.rdbuf() << endl;
+    versionFileName=options.rootDirectory + config.directory() + L".ImageMagick\\ImageMagick.version.h";
+    projectName=name;
   }
+
+  wofstream licenseFile(targetDirectory + projectName + L".txt");
+  wifstream versionFile(versionFileName);
+  if (versionFile)
+  {
+    wstring
+      line;
+
+    getline(versionFile,line);
+    getline(versionFile,line);
+    if (!startsWith(line,L"#define DELEGATE_VERSION_STRING "))
+      throwException(L"Invalid version file: " + versionFileName);
+    line=line.substr(33,line.length() - 34);
+    licenseFile << L"[ " << projectName << L" " << line << L" ]" << endl << endl;
+  }
+  else
+  {
+    licenseFile << L"[ " << projectName << L" ]" << endl << endl;
+  }
+  licenseFile << sourceLicenseFile.rdbuf() << endl;
 }
 
 void License::writeNonWindowsLicenses(const Options &options)

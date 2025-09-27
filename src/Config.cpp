@@ -200,8 +200,10 @@ void Config::load(const wstring &configFile)
       addIncludeArtifacts(config);
     else if (line == L"[INCOMPATIBLE_LICENSE]")
       _hasIncompatibleLicense=true;
-    else if (line == L"[LICENSE]")
-      addLines(config,_licenses);
+    else if (line == L"[LICENSE_FILE]")
+      _licenseFile=readLine(config);
+    else if (line == L"[LICENSE_IDENTIFIER]")
+      _licenseIdentifier=readLine(config);
     else if (line == L"[MAGICK_BASECONFIG_DEFINE]")
       addLines(config,_magickBaseconfigDefine);
     else if (line == L"[MAGICK_PROJECT]")

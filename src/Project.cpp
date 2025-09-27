@@ -592,7 +592,7 @@ void Project::writeLibProperties(wofstream& file) const
 
 void Project::writeLicense() const
 {
-  if (_config.licenses().empty())
+  if (_config.licenseFile().empty())
     return;
 
   License::write(_options,_config,name());

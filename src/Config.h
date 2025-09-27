@@ -51,7 +51,7 @@ public:
 
   const bool isOptional() const { return(_isOptional); }
 
-  const set<wstring>& licenses() const { return(_licenses); }
+  const wstring licenseFile() const { return(_licenseFile); }
 
   const wstring magickBaseconfigDefine() const { return(_magickBaseconfigDefine); }
 
@@ -117,7 +117,8 @@ private:
   bool _isImageMagick7Only;
   bool _isMagickProject;
   bool _isOptional;
-  set<wstring> _licenses;
+  wstring _licenseFile;
+  wstring _licenseIdentifier;
   wstring _magickBaseconfigDefine;
   wstring _moduleFileName;
   wstring _moduleDefinitionFile;
