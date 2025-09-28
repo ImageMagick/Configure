@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
 
-name: release
+name: Release
 permissions:
   contents: read
 jobs:
