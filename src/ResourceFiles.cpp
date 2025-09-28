@@ -34,8 +34,8 @@ void ResourceFiles::write(const Options& options, vector<Config>& configs)
     wofstream resourceFile(resourceFileName);
 
     resourceFile << L"#include \"winver.h\"" << endl;
-    resourceFile << L"#define DELEGATE_VERSION_NUM " << version.major() << L"," << version.minor() << L"," << version.patch() << endl;
-    resourceFile << L"#define DELEGATE_VERSION_STRING \"" << version.major() << L"." << version.minor() << L"." << version.patch() << L" (" << config.releaseDate() << L")\"" << endl;
+    resourceFile << L"#define DELEGATE_VERSION_NUM " << version.numericVersion() << endl;
+    resourceFile << L"#define DELEGATE_VERSION_STRING \"" << version.fullVersion() << L" (" << config.releaseDate() << L")\"" << endl;
     resourceFile << L"VS_VERSION_INFO VERSIONINFO" << endl;
     resourceFile << L" FILEVERSION DELEGATE_VERSION_NUM" << endl;
     resourceFile << L" PRODUCTVERSION DELEGATE_VERSION_NUM" << endl;
