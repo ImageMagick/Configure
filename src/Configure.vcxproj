@@ -149,10 +149,12 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="Projects.cpp" />
+    <ClCompile Include="ResourceFiles.cpp" />
     <ClCompile Include="Solution.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="ThresholdMap.cpp" />
+    <ClCompile Include="Version.cpp" />
     <ClCompile Include="VersionInfo.cpp" />
     <ClCompile Include="ConfigureApp.cpp">
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -186,9 +188,11 @@
     <ClInclude Include="PerlMagick.h" />
     <ClInclude Include="Project.h" />
     <ClInclude Include="Projects.h" />
+    <ClInclude Include="ResourceFiles.h" />
     <ClInclude Include="Shared.h" />
     <ClInclude Include="Solution.h" />
     <ClInclude Include="ThresholdMap.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="VersionInfo.h" />
     <ClInclude Include="ConfigureApp.h" />
     <ClInclude Include="ConfigureWizard.h" />

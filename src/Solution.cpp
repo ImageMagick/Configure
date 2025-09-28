@@ -69,7 +69,7 @@ void Solution::write(const Options &options,const vector<Project> &projects)
 
 void Solution::writeConfigDirectory(wofstream &file,const Options& options)
 {
-  const auto binDirectory=options.rootDirectory + L"Artifacts\\bin";
+  const auto binDirectory=options.binArtifactsDirectory();
   if (!filesystem::exists(binDirectory))
     return;
 

@@ -30,6 +30,7 @@
 #include "PerlMagick.h"
 #include "Project.h"
 #include "Projects.h"
+#include "ResourceFiles.h"
 #include "Solution.h"
 #include "ThresholdMap.h"
 #include "XmlConfigFiles.h"
@@ -78,19 +79,20 @@ BOOL ConfigureApp::InitInstance()
 
 void ConfigureApp::cleanupDirectories(Options &options,WaitDialog &waitDialog)
 {
-  filesystem::remove_all(options.rootDirectory + L"Artifacts\\demo");
-  filesystem::remove_all(options.rootDirectory + L"Artifacts\\fuzz");
+  filesystem::remove_all(options.demoArtifactsDirectory());
+  filesystem::remove_all(options.fuzzArtifactsDirectory());
   
 #ifdef _DEBUG
-  filesystem::remove_all(options.rootDirectory + L"Artifacts\\config");
-  filesystem::remove_all(options.rootDirectory + L"Artifacts\\include");
-  filesystem::remove_all(options.rootDirectory + L"Artifacts\\license");
+  filesystem::remove_all(options.configArtifactsDirectory());
+  filesystem::remove_all(options.includeArtifactsDirectory());
+  filesystem::remove_all(options.licenseArtifactsDirectory());
+  filesystem::remove_all(options.resourceArtifactsDirectory());
 #endif
 }
 
 void ConfigureApp::copyFiles(Options &options)
 {
-  const auto binDirectory=options.rootDirectory + L"Artifacts\\bin";
+  const auto binDirectory=options.binArtifactsDirectory();
 
   if (!filesystem::exists(binDirectory))
     filesystem::create_directories(binDirectory);
@@ -110,7 +112,7 @@ void ConfigureApp::copyFiles(const wstring &sourceDirectory,const wstring &targe
 
 BOOL ConfigureApp::createFiles(Options &options,WaitDialog &waitDialog) const
 {
-  waitDialog.setSteps(16);
+  waitDialog.setSteps(17);
 
   waitDialog.nextStep(L"Cleaning up directories...");
   cleanupDirectories(options,waitDialog);
@@ -128,6 +130,9 @@ BOOL ConfigureApp::createFiles(Options &options,WaitDialog &waitDialog) const
 
   waitDialog.nextStep(L"Creating projects...");
   vector<Project> projects=Projects::create(options,configs);
+
+  waitDialog.nextStep(L"Writing resource files...");
+  ResourceFiles::write(options,configs);
 
   waitDialog.nextStep(L"Writing project files...");
   Projects::write(projects);

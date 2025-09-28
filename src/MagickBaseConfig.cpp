@@ -122,7 +122,7 @@ void MagickBaseConfig::write(const Options &options)
       configOut << "#define MAGICKCORE_ZERO_CONFIGURATION_SUPPORT 0" << endl;
     configOut << endl;
 
-    for (const auto& entry : filesystem::directory_iterator(options.rootDirectory + L"Artifacts\\config"))
+    for (const auto& entry : filesystem::directory_iterator(options.configArtifactsDirectory()))
     {
       if (!entry.is_regular_file() || !endsWith(entry.path().filename(),L".h"))
         continue;

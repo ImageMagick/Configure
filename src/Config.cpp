@@ -21,7 +21,8 @@
 
 Config::Config(const wstring &name,const wstring &directory)
   : _name(name),
-    _directory(directory)
+    _directory(directory),
+    _version(Version::empty())
 {
   _disabledForArm64=false;
   _hasIncompatibleLicense=false;
@@ -164,6 +165,10 @@ void Config::load(const wstring &configFile)
       _type=ProjectType::Coder;
     else if (line == L"[CODER_REFERENCES]")
       addLines(config,_coderReferences);
+    else if (line == L"[COMPANY_NAME]")
+      _companyName=readLine(config);
+    else if (line == L"[COPYRIGHT]")
+      _copyright=readLine(config);
     else if (line == L"[DEFINES]")
       addLines(config,defines);
     else if (line == L"[DEMO]")
@@ -212,20 +217,28 @@ void Config::load(const wstring &configFile)
       _moduleDefinitionFile=readLine(config);
     else if (line == L"[NASM]")
       _useNasm=true;
+    else if (line == L"[PRODUCT_NAME]")
+      _productName=readLine(config);
     else if (line == L"[ONLY_IMAGEMAGICK7]")
       _isImageMagick7Only=true;
     else if (line == L"[OPENCL]")
       _useOpenCL=true;
     else if (line == L"[OPTIONAL]")
       _isOptional=true;
+    else if (line == L"[REFERENCES]")
+      addLines(config,_references);
+    else if (line == L"[RELEASE_DATE]")
+      _releaseDate=readLine(config);
     else if (line == L"[STATIC_LIBRARY]")
       _type=ProjectType::StaticLibrary;
     else if (line == L"[STATIC_DEFINES]")
       addLines(config,_staticDefines);
     else if (line == L"[UNICODE]")
       _useUnicode=true;
-    else if (line == L"[REFERENCES]")
-      addLines(config,_references);
+    else if (line == L"[URL]")
+      _url=readLine(config);
+    else if (line == L"[VERSION]")
+      _version=Version::parse(readLine(config));
     else if (!line.empty())
       throwException(L"Unknown section in config file: " + line);
   }

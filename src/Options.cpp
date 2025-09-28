@@ -33,7 +33,7 @@ Options::Options(const wstring &rootDirectory)
   visualStudioVersion=getVisualStudioVersion();
   zeroConfigurationSupport=FALSE;
 
-  wifstream preBuildFile(rootDirectory + L"Artifacts\\pre-build-libs.txt");
+  wifstream preBuildFile(artifactsDirectory() + L"pre-build-libs.txt");
   if (preBuildFile)
   {
     wstring

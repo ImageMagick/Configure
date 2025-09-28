@@ -47,15 +47,31 @@ public:
 
   const wstring architectureName() const;
 
-  const set<wstring>& preBuildLibs() const { return(_preBuildLibs); };
+  const wstring artifactsDirectory() const { return(rootDirectory + L"Artifacts\\"); };
+
+  const wstring binArtifactsDirectory() const { return(artifactsDirectory() + L"bin\\"); };
 
   const wstring channelMaskDepth() const;
+
+  const wstring configArtifactsDirectory() const { return(artifactsDirectory() + L"config\\"); };
+
+  const wstring demoArtifactsDirectory() const { return(artifactsDirectory() + L"demo\\"); };
+
+  const wstring fuzzArtifactsDirectory() const { return(artifactsDirectory() + L"fuzz\\"); };
+
+  const wstring includeArtifactsDirectory() const { return(artifactsDirectory() + L"include\\"); };
+
+  const wstring licenseArtifactsDirectory() const { return(artifactsDirectory() + L"license\\"); };
 
   const wstring magickCoreName() const { return(isImageMagick7 ? L"MagickCore" : L"magick"); };
 
   const wstring platform() const;
 
+  const set<wstring>& preBuildLibs() const { return(_preBuildLibs); };
+
   const wstring projectsDirectory() const;
+
+  const wstring resourceArtifactsDirectory() const { return(artifactsDirectory() + L"resource\\"); };
 
   void checkImageMagickVersion();
 

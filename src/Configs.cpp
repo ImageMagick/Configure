@@ -185,7 +185,7 @@ void Configs::removeInvalidReferences(const Options &options,vector<Config> &con
         }
       }
 
-      if (!found && !filesystem::exists(options.rootDirectory + L"Artifacts\\include\\" + reference))
+      if (!found && !filesystem::exists(options.includeArtifactsDirectory() + reference))
         invalidReferences.insert(reference);
     }
 

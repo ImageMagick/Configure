@@ -21,11 +21,16 @@
 #include "stdafx.h"
 
 #include "Options.h"
+#include "Version.h"
 
 class Config
 {
 public:
   const set<wstring>& coderReferences() const { return(_coderReferences); }
+
+  const wstring companyName() const { return(_companyName); }
+
+  const wstring copyright() const { return(_copyright); }
 
   const wstring directory() const { return(_directory); }
 
@@ -36,8 +41,6 @@ public:
   const map<wstring, wstring>& includeArtifacts() const { return(_includeArtifacts); }
 
   const set<wstring>& excludes(const Architecture architecture) const;
-
-  const wstring name() const { return(_name); }
 
   const set<wstring>& includes() const { return(_includes); }
 
@@ -56,8 +59,14 @@ public:
   const wstring magickBaseconfigDefine() const { return(_magickBaseconfigDefine); }
 
   const wstring moduleDefinitionFile() const { return(_moduleDefinitionFile); }
+
+  const wstring name() const { return(_name); }
   
   const set<wstring>& Config::nasmIncludes(const Architecture architecture) const;
+
+  const wstring productName() const { return(_productName); }
+
+  const wstring url() const { return(_url); }
 
   const bool useNasm() const { return(_useNasm); }
 
@@ -67,11 +76,15 @@ public:
 
   const set<wstring>& references() const { return(_references); }
 
+  const wstring releaseDate() const { return(_releaseDate); }
+
   const wstring resourceFileName() const { return(_resourceFileName); }
 
   const set<wstring>& staticDefines() const { return(_staticDefines); }
 
   const ProjectType type() const { return(_type); }
+
+  const Version& version() const { return(_version); }
 
   const Config copyInfo(const Config &config) const;
 
@@ -103,6 +116,9 @@ private:
   static vector<wstring> readLines(wifstream &config);
   
   set<wstring> _coderReferences;
+  wstring _companyName;
+  wstring _copyright;
+  wstring _directory;
   bool _disabledForArm64;
   set<wstring> _dynamicDefines;
   set<wstring> _excludesArm64;
@@ -123,12 +139,15 @@ private:
   wstring _moduleFileName;
   wstring _moduleDefinitionFile;
   wstring _name;
-  wstring _directory;
+  wstring _productName;
   set<wstring> _references;
+  wstring _releaseDate;
   wstring _resourceFileName;
   set<wstring> _staticDefines;
   ProjectType _type;
   bool _useNasm;
   bool _useOpenCL;
   bool _useUnicode;
+  Version _version;
+  wstring _url;
 };

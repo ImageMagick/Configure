@@ -17,33 +17,32 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
+#include "Version.h"
 
-#include "Notice.h"
-
-void Notice::write(const Options &options,const VersionInfo &versionInfo)
+Version::Version(const wstring& major,const wstring& minor,const wstring& patch,const wstring& metadata)
 {
-  wofstream notice(options.artifactsDirectory() + L"NOTICE.txt");
-  if (!notice)
-    throwException(L"Unable to open NOTICE.txt");
-
-  notice << "[ ImageMagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
-  notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
-
-  wstring licensesDirectory=options.licenseArtifactsDirectory();
-  for (const auto& entry : filesystem::directory_iterator(licensesDirectory))
-  {
-    if (!entry.is_regular_file())
-      continue;
-
-    notice << readLicense(entry.path().wstring()) << endl << endl;
-  }
+  _major=major;
+  _minor=minor;
+  _patch=patch;
+  _metadata=metadata;
 }
 
-const wstring Notice::readLicense(const wstring &fileName)
+Version Version::empty()
 {
-  wifstream file(fileName);
-  if (!file)
-    throwException(L"Unable to open license file: " + fileName);
+  return(Version(L"",L"",L"",L""));
+}
 
-  return(trim(wstring((istreambuf_iterator<wchar_t>(file)),istreambuf_iterator<wchar_t>())));
+Version Version::parse(const wstring& value)
+{
+  auto parts=split(value,L"+");
+
+  wstring metadata;
+  if (parts.size() > 1)
+    metadata=parts[1];
+
+  parts=split(parts[0],L".");
+  if (parts.size() != 3)
+    throwException(L"Invalid version: " + value);
+
+  return(Version(parts[0],parts[1],parts[2],metadata));
 }

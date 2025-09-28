@@ -129,3 +129,26 @@ static inline wstring replace(const wstring &str,const wstring &from,const wstri
   }
   return(result);
 }
+
+static std::vector<std::wstring> split(const std::wstring& str,const std::wstring& delimiter)
+{
+  std::vector<std::wstring>
+    tokens;
+
+  size_t
+    end,
+    start;
+
+  start=0;
+  end=str.find(delimiter);
+
+  while (end != std::wstring::npos)
+  {
+    tokens.push_back(str.substr(start,end - start));
+    start=end + delimiter.length();
+    end=str.find(delimiter, start);
+  }
+
+  tokens.push_back(str.substr(start));
+  return tokens;
+}

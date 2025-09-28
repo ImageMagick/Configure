@@ -517,8 +517,14 @@ void Project::writeFiles(wofstream &file) const
     }
   }
 
-  if (!_config.resourceFileName().empty())
-    file << "    <ResourceCompile Include=\"$(SolutionDir)" << _config.resourceFileName().substr(_options.rootDirectory.length()) << "\" />" << endl;
+  wstring resourceFileName = _options.resourceArtifactsDirectory() + name() + L".rc";
+  if (!filesystem::exists(resourceFileName))
+    resourceFileName=_config.resourceFileName();
+
+  if (!resourceFileName.empty())
+    file << "    <ResourceCompile Include=\"$(SolutionDir)" << resourceFileName.substr(_options.rootDirectory.length()) << "\" />" << endl;
+  else if (_config.type() == ProjectType::DynamicLibrary)
+    throwException(L"Missing resource file for project: " + _config.name());
 
   file << "  </ItemGroup>" << endl;
 }
@@ -629,7 +635,7 @@ void Project::writeMagickBaseconfigDefine() const
   if (_config.magickBaseconfigDefine().empty())
     return;
 
-  const auto targetDirectory=_options.rootDirectory + L"Artifacts\\config\\";
+  const auto targetDirectory=_options.configArtifactsDirectory();
   filesystem::create_directories(targetDirectory);
 
   const auto configFileName=targetDirectory + name() + L".h";

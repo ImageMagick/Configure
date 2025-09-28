@@ -22,7 +22,7 @@
 
 void License::write(const Options &options,const Config &config,const wstring name)
 {
-  const auto targetDirectory=options.rootDirectory + L"Artifacts\\license\\";
+  const auto targetDirectory=options.licenseArtifactsDirectory();
   filesystem::create_directories(targetDirectory);
 
   const auto sourceFileName=options.rootDirectory + config.directory() + config.licenseFile();
