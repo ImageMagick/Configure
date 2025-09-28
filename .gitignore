@@ -1,6 +1,6 @@
 /Artifacts/*
+/Configs/*.h
 config.isx
 .vs
-*.h
 *.user
 *.Aps
