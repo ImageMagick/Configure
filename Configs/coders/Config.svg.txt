@@ -2,6 +2,7 @@
 
 [REFERENCES]
 cairo
+gdk-pixbuf
 glib
 rsvg
 xml
