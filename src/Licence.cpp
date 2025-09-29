@@ -22,6 +22,10 @@
 
 void License::write(const Options &options,const Config &config,const wstring name)
 {
+  auto& version=config.version();
+  if (version.isEmpty())
+    throwException(L"Missing version information for: " + config.name());
+
   const auto targetDirectory=options.licenseArtifactsDirectory();
   filesystem::create_directories(targetDirectory);
 
@@ -30,34 +34,11 @@ void License::write(const Options &options,const Config &config,const wstring na
   if (!sourceLicenseFile)
     throwException(L"Failed to open license file: " + sourceFileName);
 
-  const auto path=filesystem::path(sourceFileName).parent_path();
-  auto versionFileName=path.wstring() + L"\\.ImageMagick\\ImageMagick.version.h";
-  auto projectName=path.filename().wstring();
-  if (!filesystem::exists(versionFileName))
-  {
-    versionFileName=options.rootDirectory + config.directory() + L".ImageMagick\\ImageMagick.version.h";
-    projectName=name;
-  }
+  wstring content((std::istreambuf_iterator<wchar_t>(sourceLicenseFile)),std::istreambuf_iterator<wchar_t>());
 
-  wofstream licenseFile(targetDirectory + projectName + L".txt");
-  wifstream versionFile(versionFileName);
-  if (versionFile)
-  {
-    wstring
-      line;
-
-    getline(versionFile,line);
-    getline(versionFile,line);
-    if (!startsWith(line,L"#define DELEGATE_VERSION_STRING "))
-      throwException(L"Invalid version file: " + versionFileName);
-    line=line.substr(33,line.length() - 34);
-    licenseFile << L"[ " << projectName << L" " << line << L" ]" << endl << endl;
-  }
-  else
-  {
-    licenseFile << L"[ " << projectName << L" ]" << endl << endl;
-  }
-  licenseFile << sourceLicenseFile.rdbuf() << endl;
+  wofstream licenseFile(targetDirectory + config.name() + L".txt");
+  licenseFile << L"[ " << config.productName() << L" " << version.fullVersion() << L" (" << config.releaseDate() << L") ]" << endl << endl;
+  licenseFile << trim(content) << endl;
 }
 
 void License::writeNonWindowsLicenses(const Options &options)
