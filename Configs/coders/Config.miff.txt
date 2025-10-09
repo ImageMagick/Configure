@@ -4,6 +4,6 @@
 LZMA_API_STATIC
 
 [REFERENCES]
-bzlib
+bzip2
 lzma
 zlib

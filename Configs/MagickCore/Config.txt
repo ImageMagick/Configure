@@ -10,7 +10,7 @@ _MAGICKMOD_
 \ImageMagick
 
 [REFERENCES]
-bzlib
+bzip2
 freetype
 fftw
 glib
