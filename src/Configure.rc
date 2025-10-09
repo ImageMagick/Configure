@@ -105,7 +105,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,153,20,124,10
     CONTROL         "Statically link C/C++ runtime library",IDC_LINK_RUNTIME,"Button",BS_AUTOCHECKBOX |
                      WS_TABSTOP,15,35,133,10
-    GROUPBOX        "Build options",IDC_STATIC,5,55,304,150
+    GROUPBOX        "Build options",IDC_STATIC,5,55,304,165
     LTEXT           "Quantum depth",IDC_STATIC,205,70,55,8
     COMBOBOX        IDC_QUANTUM_DEPTH,260,68,45,50,CBS_DROPDOWNLIST |
                     WS_VSCROLL | WS_TABSTOP
@@ -141,6 +141,9 @@ BEGIN
     CONTROL         "Use registry settings or hard-coded paths to locate installed components",
                     IDC_INSTALLED_SUPPORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     15,190,240,10
+    CONTROL         "Enable ASAN in debug builds",
+                    IDC_ENABLE_ASAN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    15,205,240,10
 END
 
 IDD_FINISHED_PAGE DIALOG  0, 0, 318, 233

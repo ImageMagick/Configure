@@ -27,6 +27,7 @@ public:
 
   Architecture architecture;
   BOOL enableDpc;
+  BOOL enableAsan;
   BOOL excludeDeprecated;
   BOOL includeIncompatibleLicense;
   BOOL includeNonWindows;

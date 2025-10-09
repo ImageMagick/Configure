@@ -668,6 +668,8 @@ void Project::writeProperties(wofstream &file) const
   file << "    <ProjectName>" << fullName() << "</ProjectName>" << endl;
   file << "    <ProjectGuid>{" << guid() << "}</ProjectGuid>" << endl;
   file << "    <Keyword>" << _options.platform() << "Proj</Keyword>" << endl;
+  if (_options.enableAsan)
+    file << "    <EnableASAN Condition=\"'$(Configuration)'=='Debug'\">true</EnableASAN>" << endl;
   file << "  </PropertyGroup>" << endl;
   file << "  <Import Project=\"$(VCTargetsPath)\\Microsoft.Cpp.Default.props\" />" << endl;
   file << "  <PropertyGroup Label=\"Configuration\">" << endl;

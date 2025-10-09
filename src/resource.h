@@ -29,10 +29,11 @@
 #define IDC_EXCLUDE_DEPRECATED          1014
 #define IDC_INSTALLED_SUPPORT           1015
 #define IDC_ZERO_CONFIGURATION_SUPPORT  1016
-#define IDC_FINISHED_TEXT               1017
-#define IDD_WAITDIALOG                  1018
-#define IDC_MSGCTRL                     1019
-#define IDC_PROGRESSCTRL                1020
+#define IDC_ENABLE_ASAN                 1017
+#define IDC_FINISHED_TEXT               1018
+#define IDD_WAITDIALOG                  1019
+#define IDC_MSGCTRL                     1020
+#define IDC_PROGRESSCTRL                1021
 
 // Next default values for new objects
 // 
