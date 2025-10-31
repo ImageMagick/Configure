@@ -22,6 +22,7 @@
 #define WINVER 0x0501
 
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
+#pragma warning(disable: 5045) // Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
 
 #include <afxwin.h>   // MFC core and standard components
 #include <afxext.h>   // MFC extensions
