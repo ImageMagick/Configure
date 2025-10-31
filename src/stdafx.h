@@ -24,6 +24,12 @@
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
 #pragma warning(disable: 5045) // Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
 
+// Hack for 32-bit release builds
+#pragma warning(push)
+#pragma warning(disable: 4738)
+#include <corecrt_math.h> 
+#pragma warning(pop)
+
 #include <afxwin.h>   // MFC core and standard components
 #include <afxext.h>   // MFC extensions
 #include <afxdtctl.h> // MFC support for Internet Explorer 4 Common Controls
