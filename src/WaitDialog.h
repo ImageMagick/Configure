@@ -25,6 +25,10 @@ class WaitDialog : public CDialog
 public:
   WaitDialog();
 
+  WaitDialog(const WaitDialog&) = delete;
+
+  WaitDialog& operator=(const WaitDialog&) = delete;
+
   ~WaitDialog();
 
   void setSteps(const int steps);

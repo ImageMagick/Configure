@@ -25,6 +25,12 @@
 class VersionInfo
 {
 public:
+  VersionInfo(VersionInfo&&) = default;
+
+  VersionInfo(const VersionInfo&) = delete;
+
+  VersionInfo& operator=(const VersionInfo&) = delete;
+
   const wstring version() const;
 
   const wstring libAddendum() const;

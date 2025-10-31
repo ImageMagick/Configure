@@ -49,6 +49,8 @@ void InstallerConfig::write(const Options &options,const VersionInfo &versionInf
     case Architecture::x64:
       configFile << L"#define public Magick64BitArchitecture 1" << endl;
       break;
+    case Architecture::x86:
+      break;
   }
 
   if (options.useHDRI)

@@ -29,13 +29,16 @@ class ConfigureApp : public CWinApp
 public:
   ConfigureApp();
 
+  ConfigureApp(const ConfigureApp&) = delete;
+
+  ConfigureApp& operator=(const ConfigureApp&) = delete;
+
   virtual BOOL InitInstance();
 
   DECLARE_MESSAGE_MAP()
 
 private:
-
-  static void cleanupDirectories(Options &options,WaitDialog &waitDialog);
+  static void cleanupDirectories(Options &options);
 
   static void copyFiles(Options &options);
 

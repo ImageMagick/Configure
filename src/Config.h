@@ -34,7 +34,7 @@ public:
 
   const wstring directory() const { return(_directory); }
 
-  const bool disabledForArm64() const { return(_disabledForArm64); }
+  bool disabledForArm64() const { return(_disabledForArm64); }
 
   const set<wstring>& dynamicDefines() const { return(_dynamicDefines); }
   
@@ -44,15 +44,15 @@ public:
 
   const set<wstring>& includes() const { return(_includes); }
 
-  const bool hasIncompatibleLicense() const { return(_hasIncompatibleLicense); }
+  bool hasIncompatibleLicense() const { return(_hasIncompatibleLicense); }
 
-  const bool isImageMagick7Only() const { return(_isImageMagick7Only); }
+  bool isImageMagick7Only() const { return(_isImageMagick7Only); }
 
-  const bool isLibrary() const { return(_type == ProjectType::DynamicLibrary || _type == ProjectType::StaticLibrary); }
+  bool isLibrary() const { return(_type == ProjectType::DynamicLibrary || _type == ProjectType::StaticLibrary); }
 
-  const bool isMagickProject() const { return(_isMagickProject); }
+  bool isMagickProject() const { return(_isMagickProject); }
 
-  const bool isOptional() const { return(_isOptional); }
+  bool isOptional() const { return(_isOptional); }
 
   const wstring licenseFile() const { return(_licenseFile); }
 
@@ -68,11 +68,11 @@ public:
 
   const wstring url() const { return(_url); }
 
-  const bool useNasm() const { return(_useNasm); }
+  bool useNasm() const { return(_useNasm); }
 
-  const bool useOpenCL() const { return(_useOpenCL); }
+  bool useOpenCL() const { return(_useOpenCL); }
 
-  const bool useUnicode() const { return(_useUnicode); }
+  bool useUnicode() const { return(_useUnicode); }
 
   const set<wstring>& references() const { return(_references); }
 
@@ -82,7 +82,7 @@ public:
 
   const set<wstring>& staticDefines() const { return(_staticDefines); }
 
-  const ProjectType type() const { return(_type); }
+  ProjectType type() const { return(_type); }
 
   const Version& version() const { return(_version); }
 

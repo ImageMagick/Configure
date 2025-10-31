@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
 class WelcomePage : public CPropertyPage
 {
@@ -26,6 +26,10 @@ class WelcomePage : public CPropertyPage
 
 public:
   WelcomePage();
+
+  WelcomePage(const WelcomePage&) = delete;
+
+  WelcomePage& operator=(const WelcomePage&) = delete;
 
   virtual BOOL OnSetActive();
 

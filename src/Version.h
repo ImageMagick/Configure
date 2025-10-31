@@ -25,7 +25,7 @@ class Version
 public:
   const wstring fullVersion() const { return(_major + L"." + _minor + L"." + _patch + (_metadata.empty() ? L"" : L"+" + _metadata)); }
 
-  const bool isEmpty() const { return(_major.empty() && _minor.empty() && _patch.empty() && _metadata.empty()); }
+  bool isEmpty() const { return(_major.empty() && _minor.empty() && _patch.empty() && _metadata.empty()); }
 
   const wstring numericVersion() const { return(_major + L"," + _minor + L"," + _patch); }
 

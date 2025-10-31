@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
 class FinishedPage : public CPropertyPage
 {
@@ -26,6 +26,10 @@ class FinishedPage : public CPropertyPage
 
 public:
   FinishedPage();
+
+  FinishedPage(const FinishedPage&) = delete;
+
+  FinishedPage& operator=(const FinishedPage&) = delete;
 
   virtual BOOL OnSetActive();
 

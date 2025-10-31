@@ -27,6 +27,8 @@ CommandLineInfo::CommandLineInfo(Options &options)
 
 void CommandLineInfo::ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast)
 {
+  UNREFERENCED_PARAMETER(bLast);
+
   if (!bFlag)
     return;
 

@@ -20,7 +20,7 @@
 
 #include "License.h"
 
-void License::write(const Options &options,const Config &config,const wstring name)
+void License::write(const Options &options,const Config &config)
 {
   auto& version=config.version();
   if (version.isEmpty())
@@ -60,6 +60,6 @@ void License::writeNonWindowsLicenses(const Options &options)
     auto configFile=options.rootDirectory + projectDirectory + L".ImageMagick\\Config.txt";
     auto config=Config::load(name,projectDirectory,configFile);
     
-    License::write(options,config,name);
+    License::write(options,config);
   }
 }

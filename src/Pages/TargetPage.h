@@ -18,9 +18,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #pragma once
-#include "../stdafx.h"
+#include "stdafx.h"
 
-#include "../Options.h"
+#include "Options.h"
 
 class TargetPage : public CPropertyPage
 {
@@ -28,6 +28,10 @@ class TargetPage : public CPropertyPage
 
 public:
   TargetPage();
+
+  TargetPage(const TargetPage&) = delete;
+
+  TargetPage& operator=(const TargetPage&) = delete;
 
   void setOptions(Options &options);
 

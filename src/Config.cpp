@@ -20,8 +20,8 @@
 #include "Config.h"
 
 Config::Config(const wstring &name,const wstring &directory)
-  : _name(name),
-    _directory(directory),
+  : _directory(directory),
+    _name(name),
     _version(Version::empty())
 {
   _disabledForArm64=false;
@@ -50,9 +50,13 @@ const set<wstring>& Config::nasmIncludes(const Architecture architecture) const
 {
   switch (architecture)
   {
-    case Architecture::x64: return(_includesNasmX64);
-    case Architecture::x86: return(_includesNasmX86);
-    default: throwException(L"Unsupported architecture");
+    case Architecture::x64:
+      return(_includesNasmX64);
+    case Architecture::x86:
+      return(_includesNasmX86);
+    case Architecture::Arm64:
+    default:
+      throwException(L"Unsupported architecture");
   }
 }
 

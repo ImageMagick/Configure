@@ -23,12 +23,21 @@ const wstring Solution::solutionDirectory(const Project &project)
 {
   switch (project.type())
   {
-    case ProjectType::Application: return(L"Applications");
-    case ProjectType::Coder: return(L"Coders");
-    case ProjectType::Demo: return(L"Demos");
-    case ProjectType::Filter: return(L"Filters");
-    case ProjectType::Fuzz: return(L"Fuzz");
-    default: return(project.directory().substr(0,project.directory().find(L"\\")));
+    case ProjectType::Application:
+      return(L"Applications");
+    case ProjectType::Coder:
+      return(L"Coders");
+    case ProjectType::Demo:
+      return(L"Demos");
+    case ProjectType::Filter:
+      return(L"Filters");
+    case ProjectType::Fuzz:
+      return(L"Fuzz");
+    case ProjectType::DynamicLibrary:
+    case ProjectType::StaticLibrary:
+    case ProjectType::Undefined:
+    default:
+      return(project.directory().substr(0,project.directory().find(L"\\")));
   }
 }
 

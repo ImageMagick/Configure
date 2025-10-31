@@ -31,7 +31,7 @@ const wstring Project::characterSet() const
   return(_config.useUnicode() ? L"Unicode" : L"MultiByte");
 }
 
-const Compiler Project::compiler() const
+Compiler Project::compiler() const
 {
   return(_config.isMagickProject() && _options.visualStudioVersion >= VisualStudioVersion::VS2022
     ? Compiler::CPP
@@ -71,7 +71,7 @@ const wstring Project::defines() const
   return(defines);
 }
 
-const bool Project::hasAsmfiles() const
+bool Project::hasAsmfiles() const
 {
   for (const auto& file : _files)
   {
@@ -109,7 +109,7 @@ const wstring Project::includeDirectories() const
   return(directories);
 }
 
-const bool Project::isApplication() const
+bool Project::isApplication() const
 {
   switch(_config.type())
   {
@@ -117,6 +117,11 @@ const bool Project::isApplication() const
     case ProjectType::Demo:
     case ProjectType::Fuzz:
       return(true);
+    case ProjectType::Coder:
+    case ProjectType::DynamicLibrary:
+    case ProjectType::Filter:
+    case ProjectType::StaticLibrary:
+    case ProjectType::Undefined:
     default:
       return(false);
   }
@@ -151,15 +156,21 @@ const wstring Project::outputDirectory() const
 {
   switch(_config.type())
   {
-    case ProjectType::Application: return(L"bin");
+    case ProjectType::Application:
+      return(L"bin");
     case ProjectType::Coder:
     case ProjectType::DynamicLibrary:
     case ProjectType::Filter:
       return(_options.isStaticBuild ? L"lib" : L"bin");
-    case ProjectType::Demo: return(L"demo");
-    case ProjectType::Fuzz: return(L"fuzz");
-    case ProjectType::StaticLibrary: return(L"lib");
-    default: throwException(L"Unsupported project type");
+    case ProjectType::Demo:
+      return(L"demo");
+    case ProjectType::Fuzz:
+      return(L"fuzz");
+    case ProjectType::StaticLibrary:
+      return(L"lib");
+    case ProjectType::Undefined:
+    default:
+      throwException(L"Unsupported project type");
   }
 }
 
@@ -167,10 +178,14 @@ const wstring Project::platformToolset() const
 {
   switch (_options.visualStudioVersion)
   {
-    case VisualStudioVersion::VS2022: return(L"v143");
-    case VisualStudioVersion::VS2019: return(L"v142");
-    case VisualStudioVersion::VS2017: return(L"v141");
-    default: throwException(L"Unknown architecture");
+    case VisualStudioVersion::VS2022:
+      return(L"v143");
+    case VisualStudioVersion::VS2019:
+      return(L"v142");
+    case VisualStudioVersion::VS2017:
+      return(L"v141");
+    default:
+      throwException(L"Unknown architecture");
   }
 }
 
@@ -178,16 +193,23 @@ const wstring Project::prefix() const
 {
   switch(_config.type())
   {
-  case ProjectType::Application: return(L"APP");
+  case ProjectType::Application:
+    return(L"APP");
   case ProjectType::Coder:
     return(_options.isStaticBuild ? L"CORE" : L"IM_MOD");
-  case ProjectType::DynamicLibrary: return(L"CORE");
-  case ProjectType::Demo: return(L"DEMO");
+  case ProjectType::DynamicLibrary:
+    return(L"CORE");
+  case ProjectType::Demo:
+    return(L"DEMO");
   case ProjectType::Filter:
     return(_options.isStaticBuild ? L"CORE" :L"FILTER");
-  case ProjectType::Fuzz: return(L"FUZZ");
-  case ProjectType::StaticLibrary: return(L"CORE");
-  default: throwException(L"Unsupported project type");
+  case ProjectType::Fuzz:
+    return(L"FUZZ");
+  case ProjectType::StaticLibrary:
+    return(L"CORE");
+  case ProjectType::Undefined:
+  default:
+    throwException(L"Unsupported project type");
   }
 }
 
@@ -605,7 +627,7 @@ void Project::writeLicense() const
   if (_config.licenseFile().empty())
     return;
 
-  License::write(_options,_config,name());
+  License::write(_options,_config);
 }
 
 void Project::writeLinkProperties(wofstream& file) const

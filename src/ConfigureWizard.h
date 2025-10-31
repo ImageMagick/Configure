@@ -31,6 +31,10 @@ class ConfigureWizard : public CPropertySheet
 public:
   ConfigureWizard(CWnd* pWndParent = (CWnd *) NULL);
 
+  ConfigureWizard(const ConfigureWizard&) = delete;
+
+  ConfigureWizard& operator=(const ConfigureWizard&) = delete;
+
   virtual ~ConfigureWizard();
 
   void setOptions(Options& options)

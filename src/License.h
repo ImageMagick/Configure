@@ -26,7 +26,7 @@
 class License
 {
 public:
-  static void write(const Options &options,const Config &config,const wstring name);
+  static void write(const Options &options,const Config &config);
 
   static void writeNonWindowsLicenses(const Options &options);
 };

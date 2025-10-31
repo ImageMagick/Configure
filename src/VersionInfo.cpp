@@ -124,7 +124,7 @@ const wstring VersionInfo::executeCommand(const wstring &command) const
   {
       buffer[bytesRead] = '\0';
       int length=MultiByteToWideChar(CP_UTF8,0,buffer,-1,NULL,0);
-      wstring data(length - 1,0);
+      wstring data((unsigned int) (length - 1),0);
       MultiByteToWideChar(CP_UTF8,0,buffer,-1,&data[0],length);
       result+=data;
   }

@@ -27,6 +27,10 @@ class CommandLineInfo : public CCommandLineInfo
 public:
   CommandLineInfo(Options &options);
 
+  CommandLineInfo(const CommandLineInfo&) = delete;
+
+  CommandLineInfo& operator=(const CommandLineInfo&) = delete;
+
   bool showWizard;
 
   virtual void ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast);

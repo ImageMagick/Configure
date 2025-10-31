@@ -26,6 +26,10 @@
 class Project
 {
 public:
+  Project(const Project&) = default;
+
+  Project& operator=(const Project&) = delete;
+
   const wstring directory() const { return(_config.directory()); };
 
   const wstring fileName() const { return(_options.projectsDirectory() + fullName() + L"\\" + fullName() + L".vcxproj"); }
@@ -34,11 +38,11 @@ public:
 
   const wstring guid() const { return(createGuid(fullName())); };
 
-  const bool isLibrary() const { return(_config.isLibrary()); };
+  bool isLibrary() const { return(_config.isLibrary()); };
 
   const wstring name() const { return(_config.name()); };
 
-  const ProjectType type() const { return(_config.type()); };
+  ProjectType type() const { return(_config.type()); };
 
   void copyConfigInfo(const Config& config);
 
@@ -65,17 +69,17 @@ private:
 
   const wstring characterSet() const;
 
-  const Compiler compiler() const;
+  Compiler compiler() const;
 
   const wstring configurationType() const;
 
   const wstring defines() const;
 
-  const bool hasAsmfiles() const;
+  bool hasAsmfiles() const;
 
   const wstring includeDirectories() const;
 
-  const bool isApplication() const;
+  bool isApplication() const;
 
   const wstring nasmOptions() const;
 

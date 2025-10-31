@@ -19,7 +19,7 @@
 */
 #include "ConfigureApp.h"
 
-int wmain(int argc,wchar_t *argv[])
+int wmain()
 {
   ConfigureApp
     app;

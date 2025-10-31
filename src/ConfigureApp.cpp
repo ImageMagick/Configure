@@ -77,7 +77,7 @@ BOOL ConfigureApp::InitInstance()
   } 
 }
 
-void ConfigureApp::cleanupDirectories(Options &options,WaitDialog &waitDialog)
+void ConfigureApp::cleanupDirectories(Options &options)
 {
   filesystem::remove_all(options.demoArtifactsDirectory());
   filesystem::remove_all(options.fuzzArtifactsDirectory());
@@ -115,7 +115,7 @@ BOOL ConfigureApp::createFiles(Options &options,WaitDialog &waitDialog) const
   waitDialog.setSteps(17);
 
   waitDialog.nextStep(L"Cleaning up directories...");
-  cleanupDirectories(options,waitDialog);
+  cleanupDirectories(options);
 
   waitDialog.nextStep(L"Loading version information...");
   optional<VersionInfo> versionInfo=VersionInfo::load(options);
