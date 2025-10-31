@@ -10,6 +10,7 @@ Options::Options(const wstring &rootDirectory)
 #else
   architecture=Architecture::x64;
 #endif
+  enableASAN=FALSE;
   enableDpc=TRUE;
   excludeDeprecated=TRUE;
 #ifdef DEBUG

@@ -26,13 +26,14 @@ public:
   Options(const wstring &rootDirectory);
 
   Architecture architecture;
-  BOOL enableDpc;
   BOOL enableASAN;
+  BOOL enableDpc;
   BOOL excludeDeprecated;
   BOOL includeIncompatibleLicense;
   BOOL includeNonWindows;
   BOOL includeOptional;
   BOOL installedSupport;
+  BOOL isImageMagick7;
   BOOL isStaticBuild;
   BOOL linkRuntime;
   BOOL onlyMagick;
@@ -42,7 +43,6 @@ public:
   BOOL useHDRI;
   BOOL useOpenCL;
   BOOL useOpenMP;
-  bool isImageMagick7;
   VisualStudioVersion visualStudioVersion;
   BOOL zeroConfigurationSupport;
 
