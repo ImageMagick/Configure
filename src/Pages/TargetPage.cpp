@@ -49,7 +49,7 @@ void TargetPage::DoDataExchange(CDataExchange* pDX)
   DDX_Check(pDX,IDC_EXCLUDE_DEPRECATED,_options->excludeDeprecated);
   DDX_Check(pDX,IDC_INSTALLED_SUPPORT,_options->installedSupport);
   DDX_Check(pDX,IDC_ZERO_CONFIGURATION_SUPPORT,_options->zeroConfigurationSupport);
-  DDX_Check(pDX,IDC_ENABLE_ASAN,_options->enableAsan);
+  DDX_Check(pDX,IDC_ENABLE_ASAN,_options->enableASAN);
 }
 
 BOOL TargetPage::OnInitDialog()
