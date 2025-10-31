@@ -25,7 +25,7 @@ jobs:
         msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
     - name: Upload executable
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: Configure.Release.${{matrix.architecture}}
         path: Artifacts/Release/${{matrix.architecture}}/bin
