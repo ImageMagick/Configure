@@ -15,20 +15,20 @@ jobs:
         architecture: [ x86, x64, arm64 ]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
+      - name: Build configure
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+          msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
-    - name: Upload executable
-      uses: actions/upload-artifact@v5
-      with:
-        name: Configure.Release.${{matrix.architecture}}
-        path: Artifacts/Release/${{matrix.architecture}}/bin
+      - name: Upload executable
+        uses: actions/upload-artifact@v5
+        with:
+          name: Configure.Release.${{matrix.architecture}}
+          path: Artifacts/Release/${{matrix.architecture}}/bin
 
   release:
     name: Release
@@ -40,55 +40,55 @@ jobs:
       id-token: write
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v5
 
-    - uses: actions/download-artifact@v6
-      name: Download executables
-      with:
-        path: ${{github.workspace}}/Artifacts
-        merge-multiple: true
+      - uses: actions/download-artifact@v6
+        name: Download executables
+        with:
+          path: ${{github.workspace}}/Artifacts
+          merge-multiple: true
 
-    - name: Install dotnet sign
-      shell: cmd
-      run: dotnet tool install --global sign --prerelease
+      - name: Install dotnet sign
+        shell: cmd
+        run: dotnet tool install --global sign --prerelease
 
-    - name: Azure CLI login with federated credential
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure CLI login with federated credential
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Sign executables
-      run: sign code trusted-signing `
-        --trusted-signing-account ImageMagick `
-        --trusted-signing-certificate-profile ImageMagick `
-        --trusted-signing-endpoint https://eus.codesigning.azure.net `
-        --azure-credential-type azure-cli `
-        --verbosity information `
-        *.exe
-      working-directory: ${{github.workspace}}/Artifacts
+      - name: Sign executables
+        run: sign code trusted-signing `
+          --trusted-signing-account ImageMagick `
+          --trusted-signing-certificate-profile ImageMagick `
+          --trusted-signing-endpoint https://eus.codesigning.azure.net `
+          --azure-credential-type azure-cli `
+          --verbosity information `
+          *.exe
+        working-directory: ${{github.workspace}}/Artifacts
 
-    - name: Create Configs archive
-      shell: cmd
-      run: |
-        powershell -Command "Compress-Archive -Path 'ColorProfiles','Configs','Installer','OpenCL','PerlMagick','Tools' -DestinationPath 'files.zip'"
+      - name: Create Configs archive
+        shell: cmd
+        run: |
+          powershell -Command "Compress-Archive -Path 'ColorProfiles','Configs','Installer','OpenCL','PerlMagick','Tools' -DestinationPath 'files.zip'"
 
-    - name: Set release number
-      shell: bash
-      run: echo "release=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
+      - name: Set release number
+        shell: bash
+        run: echo "release=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
 
-    - name: Create and push tag
-      shell: bash
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag $release
-        git push origin $release
+      - name: Create and push tag
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag $release
+          git push origin $release
 
-    - name: Publish release
-      shell: cmd
-      env:
-        GH_TOKEN: ${{github.token}}
-      run: gh release create ${{env.release}} --title "Release ${{env.release}}" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
+      - name: Publish release
+        shell: cmd
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: gh release create ${{env.release}} --title "Release ${{env.release}}" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
