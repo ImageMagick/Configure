@@ -81,18 +81,18 @@ jobs:
 
       - name: Set release number
         shell: bash
-        run: echo "release=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
+        run: echo "RELEASE=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
 
       - name: Create and push tag
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag $release
-          git push origin $release
+          git tag $RELEASE
+          git push origin $RELEASE
 
       - name: Publish release
         shell: cmd
         env:
           GH_TOKEN: ${{github.token}}
-        run: gh release create ${{env.release}} --title "Release ${{env.release}}" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
+        run: gh release create "%RELEASE%" --title "Release %RELEASE%" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
