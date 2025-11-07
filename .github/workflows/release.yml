@@ -79,20 +79,20 @@ jobs:
         run: |
           powershell -Command "Compress-Archive -Path 'ColorProfiles','Configs','Installer','OpenCL','PerlMagick','Tools' -DestinationPath 'files.zip'"
 
-      - name: Set release number
+      - name: Set version
         shell: bash
-        run: echo "RELEASE=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
+        run: echo "VERSION=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
 
       - name: Create and push tag
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag $RELEASE
-          git push origin $RELEASE
+          git tag $VERSION
+          git push origin $VERSION
 
       - name: Publish release
         shell: cmd
         env:
           GH_TOKEN: ${{github.token}}
-        run: gh release create "%RELEASE%" --title "Release %RELEASE%" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
+        run: gh release create "%VERSION%" --title "Release %VERSION%" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
