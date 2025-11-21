@@ -34,6 +34,8 @@ void CommandLineInfo::ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast
 
   if (_wcsicmp(pszParam, L"arm64") == 0)
     _options->architecture=Architecture::Arm64;
+  else if (_wcsicmp(pszParam, L"asan") == 0)
+    _options->enableASAN=TRUE;
   else if (_wcsicmp(pszParam, L"deprecated") == 0)
     _options->excludeDeprecated=FALSE;
   else if (_wcsicmp(pszParam, L"dynamic") == 0)
