@@ -178,14 +178,14 @@ const wstring Project::platformToolset() const
 {
   switch (_options.visualStudioVersion)
   {
+    case VisualStudioVersion::VS2026:
+      return(L"v145");
     case VisualStudioVersion::VS2022:
       return(L"v143");
     case VisualStudioVersion::VS2019:
       return(L"v142");
-    case VisualStudioVersion::VS2017:
-      return(L"v141");
     default:
-      throwException(L"Unknown architecture");
+      throwException(L"Unknown VisualStudio version");
   }
 }
 

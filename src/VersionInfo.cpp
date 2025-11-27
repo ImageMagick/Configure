@@ -83,9 +83,9 @@ const wstring VersionInfo::visualStudioVersionName() const
 {
   switch(_options.visualStudioVersion)
   {
-    case VisualStudioVersion::VS2017: return(L"VS2017");
     case VisualStudioVersion::VS2019: return(L"VS2019");
     case VisualStudioVersion::VS2022: return(L"VS2022");
+    case VisualStudioVersion::VS2026: return(L"VS2026");
     default: throwException(L"Unknown Visual Studio version");
   }
 }

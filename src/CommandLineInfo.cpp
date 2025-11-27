@@ -84,12 +84,12 @@ void CommandLineInfo::ParseParam(const wchar_t* pszParam, BOOL bFlag, BOOL bLast
     _options->architecture=Architecture::x86;
   else if (_wcsicmp(pszParam, L"x64") == 0)
     _options->architecture=Architecture::x64;
-  else if (_wcsicmp(pszParam, L"VS2017") == 0)
-    _options->visualStudioVersion=VisualStudioVersion::VS2017;
   else if (_wcsicmp(pszParam, L"VS2019") == 0)
     _options->visualStudioVersion=VisualStudioVersion::VS2019;
   else if (_wcsicmp(pszParam, L"VS2022") == 0)
     _options->visualStudioVersion=VisualStudioVersion::VS2022;
+  else if (_wcsicmp(pszParam, L"VS2026") == 0)
+    _options->visualStudioVersion=VisualStudioVersion::VS2026;
   else if (_wcsicmp(pszParam, L"webSafePolicy") == 0)
     _options->policyConfig=PolicyConfig::WebSafe;
   else if (_wcsicmp(pszParam, L"zeroConfigurationSupport") == 0)

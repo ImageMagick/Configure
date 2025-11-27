@@ -148,6 +148,10 @@ void Solution::writeVisualStudioVersion(wofstream& file,const Options &options)
 {
   switch(options.visualStudioVersion)
   {
+    case VisualStudioVersion::VS2026:
+      file << "# Visual Studio Version 18" << endl;
+      file << "VisualStudioVersion = 18.0.11205.157 d18.0" << endl;
+      break;
     case VisualStudioVersion::VS2022:
       file << "# Visual Studio Version 17" << endl;
       file << "VisualStudioVersion = 17.0.31903.59" << endl;
@@ -155,10 +159,6 @@ void Solution::writeVisualStudioVersion(wofstream& file,const Options &options)
     case VisualStudioVersion::VS2019:
       file << "# Visual Studio Version 16" << endl;
       file << "VisualStudioVersion = 16.0.28701.123" << endl;
-      break;
-    case VisualStudioVersion::VS2017:
-      file << "# Visual Studio Version 15" << endl;
-      file << "VisualStudioVersion = 15.0.26124.0" << endl;
       break;
   }
   file << "MinimumVisualStudioVersion = 10.0.40219.1" << endl;
