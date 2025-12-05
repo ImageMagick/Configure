@@ -178,7 +178,7 @@ void Configs::removeInvalidReferences(const Options &options,vector<Config> &con
         if (&otherConfig == &config)
           continue;
 
-        if (reference == otherConfig.name())
+        if (otherConfig.isLibrary() && reference == otherConfig.name())
         {
           found = true;
           break;
