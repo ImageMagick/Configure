@@ -1,9 +1,181 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Configure", "src\Configure.vcxproj", "{EA8B95B3-D0CD-5FEC-5494-F47FE7DEE472}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configs", "Configs", "{F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\package.version.h.in = Configs\package.version.h.in
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "coders", "coders", "{461C790E-9395-4519-A753-F2E97E680BC6}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\coders\Config.dng.txt = Configs\coders\Config.dng.txt
+		Configs\coders\Config.exr.txt = Configs\coders\Config.exr.txt
+		Configs\coders\Config.flif.txt = Configs\coders\Config.flif.txt
+		Configs\coders\Config.heic.txt = Configs\coders\Config.heic.txt
+		Configs\coders\Config.jbig.txt = Configs\coders\Config.jbig.txt
+		Configs\coders\Config.jp2.txt = Configs\coders\Config.jp2.txt
+		Configs\coders\Config.jpeg.txt = Configs\coders\Config.jpeg.txt
+		Configs\coders\Config.jxl.txt = Configs\coders\Config.jxl.txt
+		Configs\coders\Config.mat.txt = Configs\coders\Config.mat.txt
+		Configs\coders\Config.miff.txt = Configs\coders\Config.miff.txt
+		Configs\coders\Config.msl.txt = Configs\coders\Config.msl.txt
+		Configs\coders\Config.ora.txt = Configs\coders\Config.ora.txt
+		Configs\coders\Config.pango.txt = Configs\coders\Config.pango.txt
+		Configs\coders\Config.png.txt = Configs\coders\Config.png.txt
+		Configs\coders\Config.psd.txt = Configs\coders\Config.psd.txt
+		Configs\coders\Config.svg.txt = Configs\coders\Config.svg.txt
+		Configs\coders\Config.tiff.txt = Configs\coders\Config.tiff.txt
+		Configs\coders\Config.ttf.txt = Configs\coders\Config.ttf.txt
+		Configs\coders\Config.txt = Configs\coders\Config.txt
+		Configs\coders\Config.url.txt = Configs\coders\Config.url.txt
+		Configs\coders\Config.webp.txt = Configs\coders\Config.webp.txt
+		Configs\coders\ImageMagick.rc = Configs\coders\ImageMagick.rc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{922931AD-66DB-48F3-B13B-6DAFD745243A}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\demos\Config.txt = Configs\demos\Config.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "filters", "filters", "{50157659-143A-4199-9791-07AD04CAEB5D}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\filters\Config.txt = Configs\filters\Config.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Magick++", "Magick++", "{C22C140E-8167-4CEF-B591-887D5693AD67}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\Magick++\Config.txt = Configs\Magick++\Config.txt
+		Configs\Magick++\ImageMagick.rc = Configs\Magick++\ImageMagick.rc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MagickCore", "MagickCore", "{59115A9E-6B3B-427B-AF51-61DBEDD5087D}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\MagickCore\Config.txt = Configs\MagickCore\Config.txt
+		Configs\MagickCore\ImageMagick.rc = Configs\MagickCore\ImageMagick.rc
+		Configs\MagickCore\magick-baseconfig.h.in = Configs\MagickCore\magick-baseconfig.h.in
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MagickWand", "MagickWand", "{4C55E702-04A8-4E80-A999-93CF3DE2391F}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\MagickWand\Config.txt = Configs\MagickWand\Config.txt
+		Configs\MagickWand\ImageMagick.rc = Configs\MagickWand\ImageMagick.rc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "oss-fuzz", "oss-fuzz", "{ADCF9B75-B1E0-4E2C-A49D-786C3938CECF}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\oss-fuzz\Config.txt = Configs\oss-fuzz\Config.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utilities", "utilities", "{02304F77-638F-4D4D-BFA5-C0E05C123150}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\utilities\Config.txt = Configs\utilities\Config.txt
+		Configs\utilities\ImageMagick.rc = Configs\utilities\ImageMagick.rc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wand", "wand", "{27A7B900-7EEF-49B7-8E56-1222882CD0D1}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\wand\Config.txt = Configs\wand\Config.txt
+		Configs\wand\ImageMagick.rc = Configs\wand\ImageMagick.rc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{058E7D7A-189F-4667-A91D-A85D77EF878C}"
+	ProjectSection(SolutionItems) = preProject
+		Configs\xml\delegates.xml = Configs\xml\delegates.xml
+		Configs\xml\type-ghostscript.xml = Configs\xml\type-ghostscript.xml
+		Configs\xml\type.xml = Configs\xml\type.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{F886DA89-4660-4D96-8F8F-2F947B200738}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inno", "Inno", "{440A8F56-B209-4848-8583-F650D6CF6CA7}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Inno\config.isx.in = Installer\Inno\config.isx.in
+		Installer\Inno\ImageMagick.iss = Installer\Inno\ImageMagick.iss
+		Installer\Inno\PerlMagick-PPM.txt = Installer\Inno\PerlMagick-PPM.txt
+		Installer\Inno\README.txt = Installer\Inno\README.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Msix", "Msix", "{D1D2D447-980A-441F-AAA0-DDC61025AA2C}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Msix\ImageMagick.Q16-HDRI.aip = Installer\Msix\ImageMagick.Q16-HDRI.aip
+		Installer\Msix\ImageMagick.Q16.aip = Installer\Msix\ImageMagick.Q16.aip
+		Installer\Msix\ImageMagick.Q8.aip = Installer\Msix\ImageMagick.Q8.aip
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "inc", "inc", "{05657C2A-5028-441F-8EC6-59B95A54BB8F}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Inno\inc\body.isx = Installer\Inno\inc\body.isx
+		Installer\Inno\inc\files-base.isx = Installer\Inno\inc\files-base.isx
+		Installer\Inno\inc\files-configs.isx = Installer\Inno\inc\files-configs.isx
+		Installer\Inno\inc\files-development.isx = Installer\Inno\inc\files-development.isx
+		Installer\Inno\inc\files-dlls.isx = Installer\Inno\inc\files-dlls.isx
+		Installer\Inno\inc\files-documentation.isx = Installer\Inno\inc\files-documentation.isx
+		Installer\Inno\inc\files-licenses.isx = Installer\Inno\inc\files-licenses.isx
+		Installer\Inno\inc\files-perlmagick.isx = Installer\Inno\inc\files-perlmagick.isx
+		Installer\Inno\inc\icons-associate.isx = Installer\Inno\inc\icons-associate.isx
+		Installer\Inno\inc\modpath.iss = Installer\Inno\inc\modpath.iss
+		Installer\Inno\inc\registry-application.isx = Installer\Inno\inc\registry-application.isx
+		Installer\Inno\inc\run-pathtool.isx = Installer\Inno\inc\run-pathtool.isx
+		Installer\Inno\inc\run-ppm.isx = Installer\Inno\inc\run-ppm.isx
+		Installer\Inno\inc\setup.isx = Installer\Inno\inc\setup.isx
+		Installer\Inno\inc\tasks-install-devel.isx = Installer\Inno\inc\tasks-install-devel.isx
+		Installer\Inno\inc\tasks-install-perlmagick.isx = Installer\Inno\inc\tasks-install-perlmagick.isx
+		Installer\Inno\inc\tasks-legacy.isx = Installer\Inno\inc\tasks-legacy.isx
+		Installer\Inno\inc\tasks-update-path.isx = Installer\Inno\inc\tasks-update-path.isx
+		Installer\Inno\inc\uninstallrun-pathtool.isx = Installer\Inno\inc\uninstallrun-pathtool.isx
+		Installer\Inno\inc\uninstallrun-ppm.isx = Installer\Inno\inc\uninstallrun-ppm.isx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Magick++_Demo", "Magick++_Demo", "{17256E74-2025-44BF-880D-C86DF1357128}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Inno\Magick++_Demo\button.dsp = Installer\Inno\Magick++_Demo\button.dsp
+		Installer\Inno\Magick++_Demo\demo.dsp = Installer\Inno\Magick++_Demo\demo.dsp
+		Installer\Inno\Magick++_Demo\detrans.dsp = Installer\Inno\Magick++_Demo\detrans.dsp
+		Installer\Inno\Magick++_Demo\flip.dsp = Installer\Inno\Magick++_Demo\flip.dsp
+		Installer\Inno\Magick++_Demo\gravity.dsp = Installer\Inno\Magick++_Demo\gravity.dsp
+		Installer\Inno\Magick++_Demo\Magick++_Demo.dsw = Installer\Inno\Magick++_Demo\Magick++_Demo.dsw
+		Installer\Inno\Magick++_Demo\piddle.dsp = Installer\Inno\Magick++_Demo\piddle.dsp
+		Installer\Inno\Magick++_Demo\README.txt = Installer\Inno\Magick++_Demo\README.txt
+		Installer\Inno\Magick++_Demo\run_demos.bat = Installer\Inno\Magick++_Demo\run_demos.bat
+		Installer\Inno\Magick++_Demo\shapes.dsp = Installer\Inno\Magick++_Demo\shapes.dsp
+		Installer\Inno\Magick++_Demo\zoom.dsp = Installer\Inno\Magick++_Demo\zoom.dsp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PathTool", "PathTool", "{AE9ED7A4-B6D0-41B4-B791-A797688ECE85}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Inno\PathTool\README.txt = Installer\Inno\PathTool\README.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "txt", "txt", "{A3B76743-7C85-488B-A9AE-FF1722B4E1E4}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Inno\txt\license.rtf = Installer\Inno\txt\license.rtf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenCL", "OpenCL", "{095522BC-B488-40AB-BD37-4A07E13E6E8C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CL", "CL", "{B44714F0-473F-4515-A930-F84CD6211931}"
+	ProjectSection(SolutionItems) = preProject
+		OpenCL\CL\cl.h = OpenCL\CL\cl.h
+		OpenCL\CL\cl.hpp = OpenCL\CL\cl.hpp
+		OpenCL\CL\cl_d3d10.h = OpenCL\CL\cl_d3d10.h
+		OpenCL\CL\cl_d3d11.h = OpenCL\CL\cl_d3d11.h
+		OpenCL\CL\cl_dx9_media_sharing.h = OpenCL\CL\cl_dx9_media_sharing.h
+		OpenCL\CL\cl_ext.h = OpenCL\CL\cl_ext.h
+		OpenCL\CL\cl_gl.h = OpenCL\CL\cl_gl.h
+		OpenCL\CL\cl_gl_ext.h = OpenCL\CL\cl_gl_ext.h
+		OpenCL\CL\cl_platform.h = OpenCL\CL\cl_platform.h
+		OpenCL\CL\opencl.h = OpenCL\CL\opencl.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerlMagick", "PerlMagick", "{68DC9C5E-AE04-4E74-99F9-4DE8A98E970A}"
+	ProjectSection(SolutionItems) = preProject
+		PerlMagick\Makefile.PL.in = PerlMagick\Makefile.PL.in
+		PerlMagick\Zip.ps1 = PerlMagick\Zip.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +202,25 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{461C790E-9395-4519-A753-F2E97E680BC6} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{922931AD-66DB-48F3-B13B-6DAFD745243A} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{50157659-143A-4199-9791-07AD04CAEB5D} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{C22C140E-8167-4CEF-B591-887D5693AD67} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{59115A9E-6B3B-427B-AF51-61DBEDD5087D} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{4C55E702-04A8-4E80-A999-93CF3DE2391F} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{ADCF9B75-B1E0-4E2C-A49D-786C3938CECF} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{02304F77-638F-4D4D-BFA5-C0E05C123150} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{27A7B900-7EEF-49B7-8E56-1222882CD0D1} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{058E7D7A-189F-4667-A91D-A85D77EF878C} = {F8B8EE9B-6770-48AC-9E26-FA05245E4ED8}
+		{440A8F56-B209-4848-8583-F650D6CF6CA7} = {F886DA89-4660-4D96-8F8F-2F947B200738}
+		{D1D2D447-980A-441F-AAA0-DDC61025AA2C} = {F886DA89-4660-4D96-8F8F-2F947B200738}
+		{05657C2A-5028-441F-8EC6-59B95A54BB8F} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
+		{17256E74-2025-44BF-880D-C86DF1357128} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
+		{AE9ED7A4-B6D0-41B4-B791-A797688ECE85} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
+		{A3B76743-7C85-488B-A9AE-FF1722B4E1E4} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
+		{B44714F0-473F-4515-A930-F84CD6211931} = {095522BC-B488-40AB-BD37-4A07E13E6E8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADFAEA65-5C6A-4500-B6DC-0D15DD671523}
