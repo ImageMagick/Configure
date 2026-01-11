@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -131,7 +131,7 @@ void MagickBaseConfig::write(const Options &options)
       wifstream versionFile(fileName);
       if (!versionFile)
         throwException(L"Unable to open: " + fileName);
-   
+
       configOut << versionFile.rdbuf() << endl;
     }
   }

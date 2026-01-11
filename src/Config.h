@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -37,7 +37,7 @@ public:
   bool disabledForArm64() const { return(_disabledForArm64); }
 
   const set<wstring>& dynamicDefines() const { return(_dynamicDefines); }
-  
+
   const map<wstring, wstring>& includeArtifacts() const { return(_includeArtifacts); }
 
   const set<wstring>& excludes(const Architecture architecture) const;
@@ -61,7 +61,7 @@ public:
   const wstring moduleDefinitionFile() const { return(_moduleDefinitionFile); }
 
   const wstring name() const { return(_name); }
-  
+
   const set<wstring>& Config::nasmIncludes(const Architecture architecture) const;
 
   const wstring productName() const { return(_productName); }
@@ -114,7 +114,7 @@ private:
   static wstring readLine(wifstream &stream);
 
   static vector<wstring> readLines(wifstream &config);
-  
+
   set<wstring> _coderReferences;
   wstring _companyName;
   wstring _copyright;

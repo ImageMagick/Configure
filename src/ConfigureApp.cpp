@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -63,7 +63,7 @@ BOOL ConfigureApp::InitInstance()
       if (wizard.DoModal() != ID_WIZFINISH)
         return(FALSE);
     }
-    
+
     WaitDialog waitDialog;
     if (!info.showWizard)
       waitDialog.writeToConsole=true;
@@ -74,14 +74,14 @@ BOOL ConfigureApp::InitInstance()
   {
     cerr << "Exception caught: " << ex.what() << endl;
     return(FALSE);
-  } 
+  }
 }
 
 void ConfigureApp::cleanupDirectories(Options &options)
 {
   filesystem::remove_all(options.demoArtifactsDirectory());
   filesystem::remove_all(options.fuzzArtifactsDirectory());
-  
+
 #ifdef _DEBUG
   filesystem::remove_all(options.configArtifactsDirectory());
   filesystem::remove_all(options.includeArtifactsDirectory());

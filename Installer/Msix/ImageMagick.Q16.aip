@@ -12,7 +12,7 @@
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/ImageMagick/ImageMagick/discussions"/>
-    <ROW Property="AiLicenseAgreementLink" Value="https://imagemagick.org/script/license.php" Type="4"/>
+    <ROW Property="AiLicenseAgreementLink" Value="https://imagemagick.org/license/" Type="4"/>
     <ROW Property="IAgree" Value="No" Type="4"/>
     <ROW Property="Manufacturer" Value="ImageMagick"/>
     <ROW Property="ProductCode" Value="1033:{F66B634B-8B6C-4626-B6D3-DE9AE7812175} " Type="16"/>

@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -55,7 +55,7 @@ vector<Config> Configs::load(const Options &options)
   return(configs);
 }
 
-void Configs::loadCoders(const Options &options,vector<Config> &configs) 
+void Configs::loadCoders(const Options &options,vector<Config> &configs)
 {
   vector<Config>
     coders;
@@ -69,7 +69,7 @@ void Configs::loadCoders(const Options &options,vector<Config> &configs)
   {
     if (!entry.is_regular_file() || !endsWith(entry.path().filename(),L".txt"))
       continue;
-    
+
     auto name=entry.path().stem().wstring().substr(6);
     if (name.empty())
       name=L"coders";
@@ -114,7 +114,7 @@ void Configs::loadDependencies(const Options &options,vector<Config> &configs)
   }
 }
 
-void Configs::loadDirectory(const Options &options,const wstring directory,vector<Config> &configs) 
+void Configs::loadDirectory(const Options &options,const wstring directory,vector<Config> &configs)
 {
   const auto fullProjectDirectory=options.rootDirectory + L"\\" + directory;
   if (!filesystem::exists(fullProjectDirectory))
@@ -202,7 +202,7 @@ void Configs::validate(const Options &options,const vector<Config> &configs)
     {
       wstring includeDirectory = options.rootDirectory;
       if (include[0] == L'\\')
-        includeDirectory+=include.substr(1); 
+        includeDirectory+=include.substr(1);
       else
         includeDirectory+=config.directory() + include;
 

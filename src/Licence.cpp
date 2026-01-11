@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -59,7 +59,7 @@ void License::writeNonWindowsLicenses(const Options &options)
     auto projectDirectory=directory + name + L"\\";
     auto configFile=options.rootDirectory + projectDirectory + L".ImageMagick\\Config.txt";
     auto config=Config::load(name,projectDirectory,configFile);
-    
+
     License::write(options,config);
   }
 }

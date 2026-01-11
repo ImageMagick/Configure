@@ -7,7 +7,7 @@
 %  You may not use this file except in compliance with the License.  You may  %
 %  obtain a copy of the License at                                            %
 %                                                                             %
-%    http://www.imagemagick.org/script/license.php                            %
+%    https://www.imagemagick.org/license/                                     %
 %                                                                             %
 %  Unless required by applicable law or agreed to in writing, software        %
 %  distributed under the License is distributed on an "AS IS" BASIS,          %
@@ -16,7 +16,7 @@
 %  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*/ 
+*/
 #include "Projects.h"
 
 vector<Project> Projects::create(const Options &options,vector<Config> &configs)
@@ -26,9 +26,9 @@ vector<Project> Projects::create(const Options &options,vector<Config> &configs)
 
   for (auto& config : configs)
   {
-    if (config.type() == ProjectType::Coder || 
+    if (config.type() == ProjectType::Coder ||
         config.type() == ProjectType::Demo ||
-        config.type() == ProjectType::Filter || 
+        config.type() == ProjectType::Filter ||
         config.type() == ProjectType::Fuzz ||
         config.name() == L"utilities")
       continue;
@@ -56,7 +56,7 @@ void Projects::createCoderProjects(const Options &options,vector<Config> &config
     allNames.insert(project.name());
 
   auto codersProject=Project::create(*codersConfig,options);
-  
+
   if (options.isStaticBuild)
   {
     for (const auto& config : configs)
@@ -98,7 +98,7 @@ void Projects::createFilterProjects(const Options &options,vector<Config> &confi
     return;
 
   const auto filtersProject=Project::create(*filtersConfig,options);
-  
+
   if (options.isStaticBuild)
   {
     projects.push_back(filtersProject);
