@@ -131,7 +131,7 @@
     <ATTRIBUTE name="TranslateSegments" value="0b00000000000000000000000000000000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
-    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="7" UseSha256="1" TSEndPoint="https://eus.codesigning.azure.net/" TSAccountName="ImageMagick" TSCertName="ImageMagick" TSCertSubject="CN=ImageMagick Studio LLC, O=ImageMagick Studio LLC, L=Landenberg, S=Pennsylvania, C=US"/>
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="7" UseSha256="1" TSEndPoint="https://wus2.codesigning.azure.net/" TSAccountName="ImageMagick" TSCertName="ImageMagick2028" TSCertSubject="CN=ImageMagick Studio LLC, O=ImageMagick Studio LLC, L=Landenberg, S=Pennsylvania, C=US"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
