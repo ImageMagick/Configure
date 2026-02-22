@@ -2,8 +2,10 @@ on:
   workflow_dispatch:
 
 name: Release
+
 permissions:
   contents: read
+
 jobs:
   build:
     name: Build (${{matrix.architecture}})
@@ -51,26 +53,13 @@ jobs:
           path: ${{github.workspace}}/Artifacts
           merge-multiple: true
 
-      - name: Install dotnet sign
-        shell: cmd
-        run: dotnet tool install --global sign --prerelease
-
-      - name: Azure CLI login with federated credential
-        uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
+      - name: Sign executables and libraries
+        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Sign executables
-        run: sign code trusted-signing `
-          --trusted-signing-account ImageMagick `
-          --trusted-signing-certificate-profile ImageMagick `
-          --trusted-signing-endpoint https://eus.codesigning.azure.net `
-          --azure-credential-type azure-cli `
-          --verbosity information `
-          *.exe
-        working-directory: ${{github.workspace}}/Artifacts
+          directory: ${{ github.workspace }}\Artifacts
 
       - name: Create Configs archive
         shell: cmd
