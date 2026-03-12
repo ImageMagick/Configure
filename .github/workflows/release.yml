@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
         with:
           persist-credentials: false
 
@@ -29,7 +29,7 @@ jobs:
           msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.architecture}}
 
       - name: Upload executable
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: Configure.Release.${{matrix.architecture}}
           path: Artifacts/Release/${{matrix.architecture}}/bin
@@ -45,21 +45,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #v8.0.0
         name: Download executables
         with:
           path: ${{github.workspace}}/Artifacts
           merge-multiple: true
 
       - name: Sign executables and libraries
-        uses: ImageMagick/.github/actions/code-signing@e535c88db29bcffe05a25dcf3cc92b68ed171f05
+        uses: ImageMagick/code-signing-action@4d19869732e1cd97bb823ad21ebffb26ad10836c #v1.0.0
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           directory: ${{ github.workspace }}\Artifacts
+          files: '*.exe *.dll'
 
       - name: Create Configs archive
         shell: cmd
