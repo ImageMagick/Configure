@@ -155,7 +155,7 @@ BOOL ConfigureApp::createFiles(Options &options,WaitDialog &waitDialog) const
 const wstring ConfigureApp::getRootDirectory() const
 {
   auto directory=filesystem::current_path();
-  while (directory.has_parent_path())
+  while (directory != directory.parent_path())
   {
     if (directory.filename() == L"Configure")
       return directory.parent_path().wstring() + L"\\";
