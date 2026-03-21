@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37027.9 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Configure", "src\Configure.vcxproj", "{EA8B95B3-D0CD-5FEC-5494-F47FE7DEE472}"
 EndProject
@@ -177,6 +177,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PerlMagick", "PerlMagick", 
 		PerlMagick\Zip.ps1 = PerlMagick\Zip.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2BACCCC1-8170-48BC-B81D-F631C24FAB0D}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
+		.github\workflows\main.yml = .github\workflows\main.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|arm64 = Debug|arm64
@@ -221,6 +233,7 @@ Global
 		{AE9ED7A4-B6D0-41B4-B791-A797688ECE85} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
 		{A3B76743-7C85-488B-A9AE-FF1722B4E1E4} = {440A8F56-B209-4848-8583-F650D6CF6CA7}
 		{B44714F0-473F-4515-A930-F84CD6211931} = {095522BC-B488-40AB-BD37-4A07E13E6E8C}
+		{2BACCCC1-8170-48BC-B81D-F631C24FAB0D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADFAEA65-5C6A-4500-B6DC-0D15DD671523}
