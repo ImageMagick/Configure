@@ -76,14 +76,14 @@ jobs:
             ${{github.workspace}}/Artifacts/Configure.*.exe
             ${{github.workspace}}/files.zip
 
+      - name: Save provenance as multiple.intoto.jsonl
+        shell: pwsh
+        run: |
+          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/multiple.intoto.jsonl"
+
       - name: Set version
         shell: bash
         run: echo "VERSION=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
-
-      - name: Save attestation bundle
-        shell: pwsh
-        run: |
-          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/$env:VERSION.intoto.jsonl"
 
       - name: Create and push tag
         shell: bash
@@ -103,4 +103,4 @@ jobs:
             ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ^
             ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ^
             ${{github.workspace}}\files.zip ^
-            ${{github.workspace}}\%VERSION%.intoto.jsonl
+            ${{github.workspace}}\multiple.intoto.jsonl
