@@ -79,7 +79,7 @@ jobs:
       - name: Save attestation bundle
         shell: pwsh
         run: |
-          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/artifacts.sigstore.json"
+          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/attestation.json"
 
       - name: Set version
         shell: bash
@@ -103,4 +103,4 @@ jobs:
             ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ^
             ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ^
             ${{github.workspace}}\files.zip ^
-            ${{github.workspace}}\artifacts.sigstore.json
+            ${{github.workspace}}\attestation.json
