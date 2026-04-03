@@ -68,7 +68,7 @@ jobs:
         run: |
           powershell -Command "Compress-Archive -Path 'ColorProfiles','Configs','Installer','OpenCL','PerlMagick','Tools' -DestinationPath 'files.zip'"
 
-      - name: Generate artifact attestation
+      - name: Generate SLSA provenance
         id: attest
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 #v4.1.0
         with:
@@ -79,7 +79,7 @@ jobs:
       - name: Save provenance as multiple.intoto.jsonl
         shell: pwsh
         run: |
-          Copy-Item "${{steps.attest.outputs.bundle-path }}" "${{github.workspace}}\multiple.intoto.jsonl"
+          Copy-Item "${{steps.attest.outputs.bundle-path}}" "${{github.workspace}}\multiple.intoto.jsonl"
 
       - name: Set version
         shell: bash
