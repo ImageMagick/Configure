@@ -69,11 +69,17 @@ jobs:
           powershell -Command "Compress-Archive -Path 'ColorProfiles','Configs','Installer','OpenCL','PerlMagick','Tools' -DestinationPath 'files.zip'"
 
       - name: Generate artifact attestation
+        id: attest
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 #v4.1.0
         with:
           subject-path: |
             ${{github.workspace}}/Artifacts/Configure.*.exe
             ${{github.workspace}}/files.zip
+
+      - name: Save attestation bundle
+        shell: pwsh
+        run: |
+          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/artifacts.sigstore.json"
 
       - name: Set version
         shell: bash
@@ -91,4 +97,10 @@ jobs:
         shell: cmd
         env:
           GH_TOKEN: ${{github.token}}
-        run: gh release create "%VERSION%" --title "Release %VERSION%" ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ${{github.workspace}}\files.zip
+        run: |
+          gh release create "%VERSION%" --title "Release %VERSION%" ^
+            ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ^
+            ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ^
+            ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ^
+            ${{github.workspace}}\files.zip ^
+            ${{github.workspace}}\artifacts.sigstore.json
