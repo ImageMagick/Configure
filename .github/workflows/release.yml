@@ -57,10 +57,10 @@ jobs:
       - name: Sign executables and libraries
         uses: ImageMagick/code-signing-action@4d19869732e1cd97bb823ad21ebffb26ad10836c #v1.0.0
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          directory: ${{ github.workspace }}\Artifacts
+          client-id: ${{secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          directory: ${{github.workspace}}\Artifacts
           files: '*.exe *.dll'
 
       - name: Create Configs archive
@@ -79,7 +79,7 @@ jobs:
       - name: Save provenance as multiple.intoto.jsonl
         shell: pwsh
         run: |
-          Copy-Item "${{ steps.attest.outputs.bundle-path }}" "${{ github.workspace }}/multiple.intoto.jsonl"
+          Copy-Item "${{steps.attest.outputs.bundle-path }}" "${{github.workspace}}\multiple.intoto.jsonl"
 
       - name: Set version
         shell: bash
