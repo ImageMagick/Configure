@@ -75,10 +75,6 @@ jobs:
             ${{github.workspace}}/Artifacts/Configure.*.exe
             ${{github.workspace}}/files.zip
 
-      - name: List artifacts
-        shell: cmd
-        run: dir ${{github.workspace}}\Artifacts
-
       - name: Set version
         shell: bash
         run: echo "VERSION=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
