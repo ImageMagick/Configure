@@ -77,9 +77,9 @@ jobs:
             ${{github.workspace}}/files.zip
 
       - name: Save provenance as multiple.intoto.jsonl
-        shell: pwsh
+        shell: bash
         run: |
-          Copy-Item "${{steps.attest.outputs.bundle-path}}" "${{github.workspace}}\multiple.intoto.jsonl"
+          cp "${{steps.attest.outputs.bundle-path}}" "${{github.workspace}}/multiple.intoto.jsonl"
 
       - name: Set version
         shell: bash
