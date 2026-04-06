@@ -36,7 +36,7 @@ jobs:
 
   release:
     name: Release
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     needs: build
 
     permissions:
