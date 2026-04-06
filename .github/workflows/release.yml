@@ -1,5 +1,10 @@
 on:
   workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/release.yml
 
 name: Release
 
@@ -36,6 +41,7 @@ jobs:
 
   release:
     name: Release
+    if: github.event_name == 'workflow_dispatch'
     runs-on: windows-2025-vs2026
     needs: build
 
