@@ -31,7 +31,7 @@ enum class ProjectType {Undefined, Application, Coder, Demo, Filter, Fuzz, Dynam
 
 enum class QuantumDepth {Q8, Q16, Q32, Q64};
 
-enum class VisualStudioVersion {VS2019, VS2022, VS2026};
+enum class VisualStudioVersion {VS2026, VS2022};
 
 #define VSLATEST VisualStudioVersion::VS2026
 

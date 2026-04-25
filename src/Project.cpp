@@ -182,8 +182,6 @@ const wstring Project::platformToolset() const
       return(L"v145");
     case VisualStudioVersion::VS2022:
       return(L"v143");
-    case VisualStudioVersion::VS2019:
-      return(L"v142");
     default:
       throwException(L"Unknown VisualStudio version");
   }
@@ -679,8 +677,6 @@ void Project::writeOutputProperties(wofstream &file) const
   file << "    <OutDir>$(SolutionDir)Artifacts\\" << outputDirectory() << "\\</OutDir>" << endl;
   file << "    <TargetName Condition=\"'$(Configuration)'=='Debug'\">" << targetName(true) << "</TargetName>" << endl;
   file << "    <TargetName Condition=\"'$(Configuration)'=='Release'\">" << targetName(false) << "</TargetName>" << endl;
-  if (_options.visualStudioVersion >= VisualStudioVersion::VS2019)
-    file << "    <UseDebugLibraries Condition=\"'$(Configuration)'=='Debug'\">true</UseDebugLibraries>" << endl;
   file << "  </PropertyGroup>" << endl;
 }
 

@@ -126,8 +126,6 @@ VisualStudioVersion Options::getVisualStudioVersion()
     return(VisualStudioVersion::VS2026);
   else if (hasVisualStudioDirectory(L"2022"))
     return(VisualStudioVersion::VS2022);
-  else if (hasVisualStudioDirectory(L"2019"))
-    return(VisualStudioVersion::VS2019);
   else
     return(VSLATEST);
 }
