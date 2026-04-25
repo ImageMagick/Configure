@@ -65,7 +65,7 @@ const wstring Options::channelMaskDepth() const
   if (!isImageMagick7)
     return(L"");
 
-  if ((visualStudioVersion >= VisualStudioVersion::VS2022) && (architecture != Architecture::x86))
+  if (architecture != Architecture::x86)
     return(L"64");
   else
     return(L"32");

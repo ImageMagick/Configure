@@ -33,7 +33,7 @@ const wstring Project::characterSet() const
 
 Compiler Project::compiler() const
 {
-  return(_config.isMagickProject() && _options.visualStudioVersion >= VisualStudioVersion::VS2022
+  return(_config.isMagickProject()
     ? Compiler::CPP
     : Compiler::Default);
 }
