@@ -32,16 +32,16 @@
 ; MSVC Runtime DLLs.
 ;
 ; C runtime
-Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC143.CRT\vcruntime14*.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC145.CRT\vcruntime14*.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; C++ standard runtime
-Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC143.CRT\msvcp14*.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC145.CRT\msvcp14*.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; OpenMP runtime
-Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC143.OPENMP\vcomp140.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC145.OPENMP\vcomp140.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; MFC C++ runtime
-Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC143.MFC\mfc140u.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
+Source: {#MSVCRedist}\{#MagickArchitecture}\Microsoft.VC145.MFC\mfc140u.dll; DestDir: {#MagickLibDirectory}; Flags: ignoreversion
 
 ; DLLs
 #ifdef MagickDynamicPackage
