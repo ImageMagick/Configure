@@ -425,7 +425,7 @@ void Project::writeCompilationConfiguration(wofstream &file) const
   file << "      <OpenMPSupport>" << openMPSupport() << "</OpenMPSupport>" << endl;
   file << "      <WarningLevel>" << warningLevel() << "</WarningLevel>" << endl;
   file << "      <DebugInformationFormat Condition=\"'$(Configuration)'=='Debug'\">ProgramDatabase</DebugInformationFormat>" << endl;
-  file << "      <DebugInformationFormat Condition=\"'$(Configuration)'=='Release'\">None</DebugInformationFormat>" << endl;
+  file << "      <DebugInformationFormat Condition=\"'$(Configuration)'=='Release'\">OldStyle</DebugInformationFormat>" << endl;
   file << "      <BasicRuntimeChecks Condition=\"'$(Configuration)'=='Debug'\">EnableFastChecks</BasicRuntimeChecks>" << endl;
   file << "      <BasicRuntimeChecks Condition=\"'$(Configuration)'=='Release'\">Default</BasicRuntimeChecks>" << endl;
   file << "      <InlineFunctionExpansion Condition=\"'$(Configuration)'=='Debug'\">Disabled</InlineFunctionExpansion>" << endl;
