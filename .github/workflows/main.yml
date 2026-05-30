@@ -3,9 +3,10 @@ on:
     branches:
     - main
 
-name: Main
 permissions:
   contents: read
+
+name: Main
 jobs:
   build:
     name: Build (${{matrix.architecture}}, ${{matrix.configuration}})
