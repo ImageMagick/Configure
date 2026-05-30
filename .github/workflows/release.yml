@@ -106,7 +106,7 @@ jobs:
         run: |
           gh release create "%VERSION%" ^
             --title "Release %VERSION%" ^
-            --notes " " ^
+            --notes-file NUL ^
             ${{github.workspace}}\Artifacts\Configure.Release.x64.exe ^
             ${{github.workspace}}\Artifacts\Configure.Release.arm64.exe ^
             ${{github.workspace}}\Artifacts\Configure.Release.x86.exe ^
