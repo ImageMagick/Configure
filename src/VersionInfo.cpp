@@ -294,7 +294,7 @@ void VersionInfo::setGitRevision()
 
 void VersionInfo::setReleaseDate()
 {
-  _releaseDate=executeCommand(L"cd " + _options.rootDirectory + L"ImageMagick\"" + L" && git log -1 --format=%cd --date=format:%Y-%m-%d");
+  _releaseDate=executeCommand(L"cd \"" + _options.rootDirectory + L"ImageMagick\"" + L" && git log -1 --format=%cd --date=format:%Y-%m-%d");
   if (_releaseDate == L"")
     _releaseDate=getFileModificationDate(_options.rootDirectory + L"ImageMagick\\m4\\version.m4",L"%Y-%m-%d");
 }
