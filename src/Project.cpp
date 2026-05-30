@@ -417,7 +417,7 @@ void Project::writeCompilationConfiguration(wofstream &file) const
   file << "      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>" << endl;
   file << "      <AdditionalIncludeDirectories>" << includeDirectories() << "%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>" << endl;
   file << "      <FunctionLevelLinking>true</FunctionLevelLinking>" << endl;
-  file << "      <LanguageStandard>stdcpp17</LanguageStandard>" << endl;
+  file << "      <LanguageStandard>stdcpp20</LanguageStandard>" << endl;
   file << "      <LanguageStandard_C>stdc17</LanguageStandard_C>" << endl;
   file << "      <MultiProcessorCompilation>true</MultiProcessorCompilation>" << endl;
   file << "      <StringPooling>true</StringPooling>" << endl;
