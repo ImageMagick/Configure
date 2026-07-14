@@ -43,4 +43,4 @@
 Source: "PathTool\PathTool.exe"; DestDir: "{app}\uninstall"; Flags: ignoreversion
 
 ; Icon file
-Source: "{#RootDirectory}ImageMagick\images\ImageMagick.ico"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
+Source: "{#RootDirectory}ImageMagick\www\image\ImageMagick.ico"; DestDir: {#MagickAppDirectory}; Flags: ignoreversion
