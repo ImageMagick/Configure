@@ -48,4 +48,4 @@ END
 //
 /////////////////////////////////////////////////////////////////////////////
 
-IDR_MAGICKICON          ICON    DISCARDABLE     "..\\..\\..\\ImageMagick\\www\\image\\ImageMagick.ico"
+IDR_MAGICKICON          ICON    DISCARDABLE     "..\\..\\..\\ImageMagick\\ImageMagick.ico"
