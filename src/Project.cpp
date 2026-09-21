@@ -51,7 +51,7 @@ const wstring Project::configurationType() const
 
 const wstring Project::defines() const
 {
-  wstring defines=L"_WIN32_WINNT=0x0601";
+  wstring defines=L"_WIN32_WINNT=_WIN32_WINNT_WIN10";
 
   if (_options.includeIncompatibleLicense)
     defines+=L";MAGICK_INCLUDE_INCOMPATIBLE_LICENSE";
