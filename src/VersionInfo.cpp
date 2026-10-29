@@ -18,6 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 #include "VersionInfo.h"
+#include "CommandRunner.h"
 
 VersionInfo::VersionInfo(const Options& options)
   : _options(options)
@@ -87,60 +88,6 @@ const wstring VersionInfo::visualStudioVersionName() const
     case VisualStudioVersion::VS2026: return(L"VS2026");
     default: throwException(L"Unknown Visual Studio version");
   }
-}
-
-const wstring VersionInfo::executeCommand(const wstring &command) const
-{
-  HANDLE hRead, hWrite;
-  SECURITY_ATTRIBUTES sa={ sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
-
-  if (!CreatePipe(&hRead,&hWrite,&sa,0))
-    return(L"");
-
-  SetHandleInformation(hRead,HANDLE_FLAG_INHERIT,0);
-
-  PROCESS_INFORMATION pi = {};
-  STARTUPINFOW si = {};
-  si.cb=sizeof(si);
-  si.dwFlags=STARTF_USESTDHANDLES;
-  si.hStdOutput=hWrite;
-  si.hStdError=hWrite;
-  si.hStdInput=NULL;
-
-  auto cmd=L"cmd.exe /C " + command;
-  if (!CreateProcessW(NULL,cmd.data(),NULL,NULL,TRUE,CREATE_NO_WINDOW,NULL,NULL,&si,&pi))
-  {
-    CloseHandle(hWrite);
-    CloseHandle(hRead);
-    return(L"");
-  }
-  CloseHandle(hWrite);
-
-  wstring result;
-  char buffer[4096] = { 0 };
-  DWORD bytesRead;
-  while (ReadFile(hRead,buffer,sizeof(buffer) - 1,&bytesRead,NULL) && bytesRead)
-  {
-      buffer[bytesRead] = '\0';
-      int length=MultiByteToWideChar(CP_UTF8,0,buffer,-1,NULL,0);
-      wstring data((unsigned int) (length - 1),0);
-      MultiByteToWideChar(CP_UTF8,0,buffer,-1,&data[0],length);
-      result+=data;
-  }
-  CloseHandle(hRead);
-
-  DWORD exitCode;
-  WaitForSingleObject(pi.hProcess,INFINITE);
-  GetExitCodeProcess(pi.hProcess,&exitCode);
-
-  CloseHandle(pi.hProcess);
-  CloseHandle(pi.hThread);
-
-  if (exitCode != 0)
-    return L"";
-
-  result=replace(result,L"\n",L"");
-  return result;
 }
 
 const wstring VersionInfo::getFileModificationDate(const wstring &fileName,const wstring &format) const
@@ -285,16 +232,18 @@ wstring VersionInfo::replaceVariable(const wstring& line,const size_t start,cons
 
 void VersionInfo::setGitRevision()
 {
-  _gitRevision=executeCommand(L"cd \"" + _options.rootDirectory + L"ImageMagick\"" + L" && git rev-parse --short HEAD");
+  const CommandRunner commandRunner(_options.rootDirectory + L"ImageMagick");
+  _gitRevision=commandRunner.execute(L"git rev-parse --short HEAD");
   if (_gitRevision != L"")
-    _gitRevision+=executeCommand(L"cd \"" + _options.rootDirectory + L"ImageMagick\"" + L" && git log -1 --format=:%cd --date=format:%Y%m%d");
+    _gitRevision+=commandRunner.execute(L"git log -1 --format=:%cd --date=format:%Y%m%d");
   if (_gitRevision == L"")
     _gitRevision=getFileModificationDate(_options.rootDirectory + L"ImageMagick\\m4\\version.m4",L"%Y%m%d");
 }
 
 void VersionInfo::setReleaseDate()
 {
-  _releaseDate=executeCommand(L"cd \"" + _options.rootDirectory + L"ImageMagick\"" + L" && git log -1 --format=%cd --date=format:%Y-%m-%d");
+  const CommandRunner commandRunner(_options.rootDirectory + L"ImageMagick");
+  _releaseDate=commandRunner.execute(L"git log -1 --format=%cd --date=format:%Y-%m-%d");
   if (_releaseDate == L"")
     _releaseDate=getFileModificationDate(_options.rootDirectory + L"ImageMagick\\m4\\version.m4",L"%Y-%m-%d");
 }

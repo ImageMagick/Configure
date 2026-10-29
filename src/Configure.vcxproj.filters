@@ -18,6 +18,8 @@
     </ClCompile>
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Configs.cpp" />
+    <ClCompile Include="CommandRunner.cpp" />
+    <ClCompile Include="GitRepositoryInfo.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="Projects.cpp" />
     <ClCompile Include="ConfigureWizard.cpp" />
@@ -53,6 +55,8 @@
     </ClInclude>
     <ClInclude Include="Config.h" />
     <ClInclude Include="Configs.h" />
+    <ClInclude Include="CommandRunner.h" />
+    <ClInclude Include="GitRepositoryInfo.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="Projects.h" />
     <ClInclude Include="ConfigureWizard.h" />

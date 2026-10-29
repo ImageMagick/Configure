@@ -19,6 +19,7 @@
 */
 
 #include "Notice.h"
+#include "GitRepositoryInfo.h"
 
 void Notice::write(const Options &options,const VersionInfo &versionInfo)
 {
@@ -26,7 +27,8 @@ void Notice::write(const Options &options,const VersionInfo &versionInfo)
   if (!notice)
     throwException(L"Unable to open NOTICE.txt");
 
-  notice << "[ ImageMagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") ]" << endl << endl;
+  const auto repositoryInfo=GitRepositoryInfo::load(options.rootDirectory + L"ImageMagick");
+  notice << "[ ImageMagick " << versionInfo.version() << versionInfo.libAddendum() << " (" << versionInfo.releaseDate() << ") (" << repositoryInfo.link() << ") ]" << endl << endl;
   notice << readLicense(options.rootDirectory + L"ImageMagick\\LICENSE") << endl << endl;
 
   wstring licensesDirectory=options.licenseArtifactsDirectory();

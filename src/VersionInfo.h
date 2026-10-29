@@ -62,8 +62,6 @@ private:
 
   const wstring visualStudioVersionName() const;
 
-  const wstring executeCommand(const wstring &command) const;
-
   const wstring getFileModificationDate(const wstring &fileName,const wstring &format) const;
 
   void load(const wstring fileName);

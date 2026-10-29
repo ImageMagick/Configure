@@ -19,6 +19,7 @@
 */
 
 #include "License.h"
+#include "GitRepositoryInfo.h"
 
 void License::write(const Options &options,const Config &config)
 {
@@ -36,8 +37,10 @@ void License::write(const Options &options,const Config &config)
 
   wstring content((std::istreambuf_iterator<wchar_t>(sourceLicenseFile)),std::istreambuf_iterator<wchar_t>());
 
+  const auto repositoryDirectory=filesystem::path(sourceFileName).parent_path().wstring();
+  const auto repositoryInfo=GitRepositoryInfo::load(repositoryDirectory);
   wofstream licenseFile(targetDirectory + config.name() + L".txt");
-  licenseFile << L"[ " << config.productName() << L" " << version.fullVersion() << L" (" << config.releaseDate() << L") ]" << endl << endl;
+  licenseFile << L"[" << config.productName() << L" " << version.fullVersion() << L" (" << config.releaseDate() << L") (" << repositoryInfo.link() << L")]" << endl << endl;
   licenseFile << trim(content) << endl;
 }
 

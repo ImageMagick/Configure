@@ -131,6 +131,8 @@
   <ItemGroup>
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Configs.cpp" />
+    <ClCompile Include="CommandRunner.cpp" />
+    <ClCompile Include="GitRepositoryInfo.cpp" />
     <ClCompile Include="Licence.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Options.cpp" />
@@ -181,6 +183,8 @@
   <ItemGroup>
     <ClInclude Include="Config.h" />
     <ClInclude Include="Configs.h" />
+    <ClInclude Include="CommandRunner.h" />
+    <ClInclude Include="GitRepositoryInfo.h" />
     <ClInclude Include="License.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="InstallerConfig.h" />
