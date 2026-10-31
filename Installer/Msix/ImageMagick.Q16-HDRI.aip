@@ -7,7 +7,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_PROPPATH_PERBUILD_magick.exe" Value="x64\magick.exe" MultiBuildValue="Build_MSIXSubBuild_1:arm64\magick.exe"/>
+    <ROW Property="AI_PROPPATH_PERBUILD_magick.exe" Value="x64\magick.exe"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/ImageMagick/ImageMagick/discussions"/>
@@ -123,7 +123,6 @@
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="Build_MSIX" BuildName="Build_MSIX" BuildOrder="1" BuildType="7" PackageFolder="Artifacts" PackageFileName="ImageMagick.Q16-HDRI" Languages="en" UwpTargetDesktop="TargetDeviceFamily" UwpAppXBuildPackageBundle="true" UwpAppInstallerManifestFile="MsixAppInstallerData.xml"/>
     <ROW BuildKey="Build_MSIXSubBuild" BuildName="x64" BuildOrder="2" BuildType="8" ParentBuild="Build_MSIX"/>
-    <ROW BuildKey="Build_MSIXSubBuild_1" BuildName="arm64" BuildOrder="3" BuildType="8" ParentBuild="Build_MSIX"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
